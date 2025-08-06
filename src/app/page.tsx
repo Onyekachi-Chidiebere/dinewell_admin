@@ -1,103 +1,93 @@
+"use client";
 import Image from "next/image";
-
-export default function Home() {
+import styles from "./login.module.css";
+export default function Login() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className={styles.loginContainer}>
+      {/* Shadow */}
+      <div className="absolute top-0 left-0 w-[707px] h-[151.33px] rounded-[2362.18px] blur-[709.36px]" style={{background: "linear-gradient(90deg, #2DCA04 0%, #C1B816 45.67%, #D2205E 92.79%)"}} />
+      {/* Logo */}
+      <div className="flex items-center z-10 mb-[40px]">
+        <span className="font-inter font-semibold text-[77.91px] leading-[62.33px] text-[#9B87F6]">Dine</span>
+        <span className="font-inter font-semibold text-[77.91px] leading-[62.33px] text-[#EF7013]">Well</span>
+      </div>
+     
+     <div className="flex flex-col items-center justify-center gap-2">
+      <h1 className="text-[32px] leading-[10px] font-inter font-bold">Welcome Back</h1>
+      <h2 className="text-[12px] leading-[10px] font-inter font-normal italic text-[#828DA9]">Sign In to Access your Workplace</h2>
+     </div>
+        {/* Form Fields */}
+        <form className="flex flex-col  w-[400px]">
+        
+          <div className="h-[20px] w-full"/>
+          {/* Email Field */}
+          <div
+            className="flex items-center w-full  mb-4 relative"
+            style={{
+              background: "#fff",
+              borderRadius: 999,
+              boxShadow: "2px 2px 20px -3px rgba(0,0,0,0.08)",
+              gap: 8,
+              height: 44,
+              border: 'none',
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <input
+              type="Email"
+              placeholder="Email here"
+              className="flex-1 bg-transparent outline-none font-mulish text-[12px] font-normal leading-[9.6px] tracking-[-0.4%] text-[#828DA9] placeholder-[#828DA9] h-full"
+              style={{fontFamily: 'Mulish', fontWeight: 400, fontSize: 12, lineHeight: '0.8em', letterSpacing: '-0.4%', height: '100%', border: 'none', margin:16}}
+              required
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+         
+          </div>
+          <div className="h-[20px] w-full"/>
+          {/* Password Field */}
+          <div
+            className="flex items-center w-full  mb-4 relative"
+            style={{
+              background: "#fff",
+              borderRadius: 999,
+              boxShadow: "2px 2px 20px -3px rgba(0,0,0,0.08)",
+              gap: 8,
+              height: 44,
+              border: 'none',
+            }}
           >
-            Read our docs
-          </a>
+            <input
+              type="password"
+              placeholder="Password here"
+              className="flex-1 bg-transparent outline-none font-mulish text-[12px] font-normal leading-[9.6px] tracking-[-0.4%] text-[#828DA9] placeholder-[#828DA9] h-full"
+              style={{fontFamily: 'Mulish', fontWeight: 400, fontSize: 12, lineHeight: '0.8em', letterSpacing: '-0.4%', height: '100%', border: 'none', margin:16}}
+              required
+            />
+         
+          </div>
+          <div className="h-[20px] w-full"/>
+          {/* Login Button */}
+          <button
+            type="submit"
+            className="w-full font-maven font-bold text-[16px] leading-[12.8px] tracking-[-0.4%] text-center mt-4 cursor-pointer"
+            style={{
+              height: 44,
+              background: '#D52B1E',
+              border: '1px solid',
+              borderImage: 'linear-gradient(90deg, #C4CBF2 0%, #DCC2FF 44%, #E1DAF4 71%, #D2D3F3 100%) 1',
+              borderRadius: 999,
+              boxShadow: '2px 2px 50px 0px rgba(0,0,0,0.15)',
+              color: '#fff',
+              padding: 10,
+            }}
+          >
+            Login
+          </button>
+          <div className="h-[20px] w-full"/>
+            {/* Forgot Password */}
+        <div className="flex justify-center mt-4">
+          <span className="font-redhat text-[12px] leading-[12px] text-[#828DA9] cursor-pointer underline italic">Forgot Password?</span>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </form>
+      
+      </div>
   );
-}
+} 

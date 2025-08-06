@@ -1,0 +1,11 @@
+.loginContainer {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: url('/login_background.svg') center center / cover no-repeat;
+  position: relative;
+  overflow: hidden;
+}
