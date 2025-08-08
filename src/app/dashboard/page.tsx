@@ -7,6 +7,7 @@ import restaurantsIcon from "../../assets/svg/dashboardrestaurants.svg";
 import customersIcon from "../../assets/svg/dashboardcustomers.svg";
 import Image from "next/image";
 import Graph from "@/components/Graph";
+import LeaderBoard from "@/components/LeaderBoard";
 
 const RestaurantsIcon = () => <Image src={restaurantsIcon} alt="Restaurants" width={24} height={24}/>
 const CustomersIcon = () => <Image src={customersIcon} alt="Customers" width={24} height={24}/>
@@ -129,7 +130,8 @@ export default function Dashboard() {
         stats={customersStats} 
       />
     </div>
-    <Graph 
+    <div className="flex p-8" style={{ gap: '10px', padding: ' 10px 40px ' }}>
+      <Graph 
         title="ACTIVE USER GRAPH"
         datasets={graphDatasets}
         xAxisKey="name"
@@ -137,7 +139,21 @@ export default function Dashboard() {
         yAxisDomain={[0, 20]}
         yAxisTicks={[0, 5, 10, 15, 20]}
       />
-      <Graph 
+     <div className="w-[40%] flex">
+      <LeaderBoard title="CUSTOMER LEADERBOARD">
+        <p>1. Chidiebere</p>
+      </LeaderBoard>
+     </div>
+    </div>
+    <div className="flex p-8" style={{ gap: '10px', padding: ' 10px 40px ' }}>
+      
+     <div className="w-[40%] flex">
+      <LeaderBoard title="RESTAURANT LEADERBOARD"
+      colors = {{ background: '#F9F1EC', border: '#D7DDFF' }}>
+        <p>1. KFC</p>
+      </LeaderBoard>
+     </div>
+     <Graph 
         title="POINTS GRAPH"
         datasets={graphPointsDatasets}
         xAxisKey="name"
@@ -145,6 +161,9 @@ export default function Dashboard() {
         yAxisDomain={[0, 20]}
         yAxisTicks={[0, 5, 10, 15, 20]}
       />
+    </div>
+      
+     
    </div>
   );
 }

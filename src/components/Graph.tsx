@@ -57,7 +57,7 @@ const Graph: React.FC<GraphProps> = ({ title, datasets, xAxisKey, yAxisFormatter
     return Array.from(dataMap.values());
   }, [datasets, xAxisKey]);
   return (
-    <div style={{ width: '100%', maxWidth: '930px', height: '400px', display: 'flex', flexDirection: 'column', background: 'white', padding: '20px', borderRadius: '12px', border: '1px solid #EBEEFF' }}>
+    <div style={{ width: '100%', maxWidth: '1000px', height: '400px', display: 'flex', flexDirection: 'column', background: 'white', padding: '20px', borderRadius: '12px', border: '1px solid #EBEEFF' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #D2D3F3', background: '#F5F5FF', margin: '-20px -20px 0 -20px', borderRadius: '12px 12px 0 0' }}>
         <h2 style={{ fontFamily: 'var(--font-maven-pro)', fontWeight: 700, fontSize: '16px', color: '#828DA9', margin: 0 }}>
           {title}
