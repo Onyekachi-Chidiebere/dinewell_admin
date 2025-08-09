@@ -23,7 +23,7 @@ interface TableProps {
   analytics: AnalyticsItem[];
   headers: string[];
   data: Record<string, any>[];
-  renderCell: (header: string, value: any) => React.ReactNode;
+  renderCell: (header: string, value: any, row: Record<string, any>) => React.ReactNode;
   activeAnalyticsKey: string;
   onAnalyticsItemClick: (key: string) => void;
   pagination?: PaginationProps;
@@ -104,7 +104,7 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
               <tr key={rowIndex} style={{ borderBottom: '1px solid #E2E8F0' }}>
                 {headers.map((header) => (
                   <td key={header} style={{ padding: '12px 16px', fontSize: '14px', color: '#334155' }}>
-                    {renderCell(header, row[header])}
+                    {renderCell(header, row[header], row)}
                   </td>
                 ))}
               </tr>

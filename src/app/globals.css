@@ -17,3 +17,11 @@ body {
   margin:0;
   padding:0;
 }
+
+.custom-tabs-list::before {
+  display: none !important;
+}
+.custom-tab[data-active] {
+  background-color: #9B87F6 !important;
+  color: #fff !important;
+}
