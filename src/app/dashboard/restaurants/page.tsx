@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
 import Table from "@/components/Table";
 import Modal from '@/components/Modal';
+import ModalCard, { DetailRow } from '@/components/ModalCard';
 
 
 const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> = ({ status }) => {
@@ -126,15 +127,34 @@ const Restaurants = () => {
         return value;
     };
 
-  const tabs = [
+    const tabs = [
     {
-      name: 'Details', content:<div></div>
-       
+      name: 'Details',
+      content: (
+        <div style={{ padding: '0 16px' }}>
+          <ModalCard title="">
+            <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
+          </ModalCard>
+          <ModalCard title="">
+            <DetailRow label="RESTAURANT PHOTO" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
+          </ModalCard>
+          <ModalCard title="RESTAURANT DETAILS">
+            <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
+            <DetailRow label="ADDRESS" value={selectedRestaurant?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
+            <DetailRow label="LOCATION" value={selectedRestaurant?.['LOCATION'] || 'Toronto, Canada'} />
+          </ModalCard>
+          <ModalCard title="CONTACT DETAILS">
+            <DetailRow label="EMAIL" value={selectedRestaurant?.['EMAIL'] || 'sam@gmail.com'} />
+            <DetailRow label="PHONE NUMBER" value={selectedRestaurant?.['PHONE NUMBER'] || '08012345678'} />
+            <DetailRow label="WEBSITE" value={selectedRestaurant?.['WEBSITE'] || 'www.chickenrepublic.com'} />
+          </ModalCard>
+        </div>
+      ),
     },
-    { name: 'Loyalty Program', content: <p>Loyalty Program</p> },
-    { name: 'Points Transactions', content: <p>Points Transactions</p> },
-    { name: 'Users', content: <p>Users</p> },
-    { name: 'Analytics', content: <p>Analytics</p> },
+    { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
+    { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
+    { name: 'Users', content: <p style={{padding: '16px'}}>Users</p> },
+    { name: 'Analytics', content: <p style={{padding: '16px'}}>Analytics</p> },
   ];
 
     return (
