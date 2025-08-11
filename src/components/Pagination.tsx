@@ -7,6 +7,7 @@ interface PaginationProps {
   totalPages: number;
   totalResults: number;
   resultsPerPage: number;
+  small?: boolean;
   onPageChange: (page: number) => void;
 }
 
@@ -15,6 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   totalResults,
   resultsPerPage,
+  small = true,
   onPageChange,
 }) => {
   const startResult = (currentPage - 1) * resultsPerPage + 1;
@@ -81,7 +83,7 @@ const Pagination: React.FC<PaginationProps> = ({
         borderBottom: '1px solid #EBEEFF',
         fontFamily: 'var(--font-mulish)',
         fontSize: '14px',
-        marginBottom:'32px'
+        marginBottom:small?'0':'32px'
       }}
     >
       <span style={{ color: '#828DA9' }}>

@@ -48,25 +48,7 @@ export default function Dashboard() {
         { name: 'Fri 17th', value: 8 },
       ]
     },
-    // {
-    //   name: 'Restaurant Activity',
-    //   color: '#828DA9',
-    //   data: [
-    //     { name: 'Sun 5th', value: 8.2 },
-    //     { name: 'Mon 6th', value: 8.5 },
-    //     { name: 'Tue 7th', value: 7.8 },
-    //     { name: 'Wed 8th', value: 4.5 },
-    //     { name: 'Thur 9th', value: 10.2 },
-    //     { name: 'Fri 10th', value: 8.9 },
-    //     { name: 'Sat 11th', value: 9.1 },
-    //     { name: 'Sun 12th', value: 11.5 },
-    //     { name: 'Mon 13th', value: 12.1 },
-    //     { name: 'Tue 14th', value: 7.9 },
-    //     { name: 'Wed 15th', value: 10.0 },
-    //     { name: 'Thur 16th', value: 6.5 },
-    //     { name: 'Fri 17th', value: 7.2 },
-    //   ]
-    // }
+  
   ];
 
   const graphPointsDatasets = [
@@ -131,14 +113,14 @@ export default function Dashboard() {
       />
     </div>
     <div className="flex p-8" style={{ gap: '10px', padding: ' 10px 40px ' }}>
-      <Graph 
-        title="ACTIVE USER GRAPH"
-        datasets={graphDatasets}
-        xAxisKey="name"
-        yAxisFormatter={(tick) => `${tick} M`}
-        yAxisDomain={[0, 20]}
-        yAxisTicks={[0, 5, 10, 15, 20]}
-      />
+        <Graph 
+          title="USER ACTIVITY"
+          datasets={graphDatasets}
+          xAxisKey="name"
+          yAxisFormatter={(tick) => `${tick}k`}
+          yAxisDomain={[0, 20]}
+          yAxisTicks={[0, 5, 10, 15, 20]}
+        />
      <div className="w-[40%] flex">
       <LeaderBoard title="CUSTOMER LEADERBOARD">
         <p>1. Chidiebere</p>

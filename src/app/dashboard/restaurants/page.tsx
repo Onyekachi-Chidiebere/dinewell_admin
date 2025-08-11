@@ -1,4 +1,6 @@
 "use client";
+
+
 import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
 import Table from "@/components/Table";
@@ -6,7 +8,15 @@ import { Avatar } from '@mantine/core';
 import Modal from '@/components/Modal';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 import UsersTab from '@/components/UsersTab';
+import Graph from "@/components/Graph";
 
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    role: 'SUPER ADMIN' | 'ADMIN' | 'SUPPORT' | 'MANAGER' | 'STAFF' | 'INTERN';
+    activeStatus: string;
+}
 
 const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> = ({ status }) => {
     const statusStyles = {
@@ -66,7 +76,7 @@ const Restaurants = () => {
     useEffect(() => {
         setTitle("Restaurants");
         setActionText("New Restaurant");
-        setAction(() => () => alert("New Restaurant clicked!"));
+        setAction(() => console.log("New Restaurant clicked!"));
     }, [setTitle, setAction, setActionText]);
 
     const analytics = [
@@ -129,63 +139,118 @@ const Restaurants = () => {
         return value;
     };
 
-    const mockUsers = [
-    { id: '1', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPER ADMIN', activeStatus: '12/05/2025 12:02PM' },
-    { id: '2', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'ADMIN', activeStatus: '12/05/2025 12:02PM' },
-    { id: '3', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPPORT', activeStatus: '12/05/2025 12:02PM' },
-    { id: '4', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'MANAGER', activeStatus: '12/05/2025 12:02PM' },
-    { id: '5', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-    { id: '6', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-    { id: '7', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
-    { id: '8', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-    { id: '9', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
-    { id: '10', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-    { id: '11', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-    { id: '12', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
-  ];
+    const mockUsers: User[] = [
+        { id: '1', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPER ADMIN', activeStatus: '12/05/2025 12:02PM' },
+        { id: '2', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'ADMIN', activeStatus: '12/05/2025 12:02PM' },
+        { id: '3', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPPORT', activeStatus: '12/05/2025 12:02PM' },
+        { id: '4', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'MANAGER', activeStatus: '12/05/2025 12:02PM' },
+        { id: '5', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+        { id: '6', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+        { id: '7', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
+        { id: '8', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+        { id: '9', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
+        { id: '10', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+        { id: '11', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+        { id: '12', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    ];
 
-  const tabs = [
-    {
-      name: 'Details',
-      content: (
-        <div style={{ padding: '0 16px' }}>
-          <ModalCard title="">
-            <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
-          </ModalCard>
-          <ModalCard title="">
-            <DetailRow label="RESTAURANT PHOTO">
-              <Avatar src={selectedRestaurant?.logo} size={80} radius="sm" />
-            </DetailRow>
-          </ModalCard>
-          <ModalCard title="RESTAURANT DETAILS">
-            <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
-            <DetailRow label="ADDRESS" value={selectedRestaurant?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
-            <DetailRow label="LOCATION" value={selectedRestaurant?.['LOCATION'] || 'Toronto, Canada'} />
-          </ModalCard>
-          <ModalCard title="CONTACT DETAILS">
-            <DetailRow label="EMAIL" value={selectedRestaurant?.['EMAIL'] || 'sam@gmail.com'} />
-            <DetailRow label="PHONE NUMBER" value={selectedRestaurant?.['PHONE NUMBER'] || '08012345678'} />
-            <DetailRow label="WEBSITE" value={selectedRestaurant?.['WEBSITE'] || 'www.chickenrepublic.com'} />
-          </ModalCard>
-        </div>
-      ),
-    },
-    // { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
-    // { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
-    { name: 'Users', content: <UsersTab users={mockUsers} /> },
-    { name: 'Analytics', content: <p style={{padding: '16px'}}>Analytics</p> },
-  ];
+    const graphPointsDatasets = [
+        {
+            name: 'Points Redeemed ',
+            color: '#5D47C1',
+            data: [
+                { name: 'Sun 5th', value: 10.5 },
+                { name: 'Mon 6th', value: 10.5 },
+                { name: 'Tue 7th', value: 9 },
+                { name: 'Wed 8th', value: 5 },
+                { name: 'Thur 9th', value: 11.8 },
+                { name: 'Fri 10th', value: 9.8 },
+                { name: 'Sat 11th', value: 9.8 },
+                { name: 'Sun 12th', value: 12.2 },
+                { name: 'Mon 13th', value: 13 },
+                { name: 'Tue 14th', value: 8.5 },
+                { name: 'Wed 15th', value: 11 },
+                { name: 'Thur 16th', value: 7.2 },
+                { name: 'Fri 17th', value: 8 },
+            ]
+        },
+        {
+            name: 'Points Earned',
+            color: '#EF7013',
+            data: [
+                { name: 'Sun 5th', value: 8.2 },
+                { name: 'Mon 6th', value: 8.5 },
+                { name: 'Tue 7th', value: 7.8 },
+                { name: 'Wed 8th', value: 4.5 },
+                { name: 'Thur 9th', value: 10.2 },
+                { name: 'Fri 10th', value: 8.9 },
+                { name: 'Sat 11th', value: 9.1 },
+                { name: 'Sun 12th', value: 11.5 },
+                { name: 'Mon 13th', value: 12.1 },
+                { name: 'Tue 14th', value: 7.9 },
+                { name: 'Wed 15th', value: 10.0 },
+                { name: 'Thur 16th', value: 6.5 },
+                { name: 'Fri 17th', value: 7.2 },
+            ]
+        }
+    ];
+
+    const tabs = [
+        {
+            name: 'Details',
+            content: (
+                <div style={{ padding: '0 16px' }}>
+                    <ModalCard title="">
+                        <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
+                    </ModalCard>
+                    <ModalCard title="">
+                        <DetailRow label="RESTAURANT PHOTO">
+                            <Avatar src={selectedRestaurant?.logo} size={80} radius="sm" />
+                        </DetailRow>
+                    </ModalCard>
+                    <ModalCard title="RESTAURANT DETAILS">
+                        <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
+                        <DetailRow label="ADDRESS" value={selectedRestaurant?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
+                        <DetailRow label="LOCATION" value={selectedRestaurant?.['LOCATION'] || 'Toronto, Canada'} />
+                    </ModalCard>
+                    <ModalCard title="CONTACT DETAILS">
+                        <DetailRow label="EMAIL" value={selectedRestaurant?.['EMAIL'] || 'sam@gmail.com'} />
+                        <DetailRow label="PHONE NUMBER" value={selectedRestaurant?.['PHONE NUMBER'] || '08012345678'} />
+                        <DetailRow label="WEBSITE" value={selectedRestaurant?.['WEBSITE'] || 'www.chickenrepublic.com'} />
+                    </ModalCard>
+                </div>
+            ),
+        },
+        // { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
+        // { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
+        { name: 'Users', content: <div style={{ padding: '0 16px' }}><UsersTab users={mockUsers} /> </div> },
+        {
+            name: 'Analytics', content: <div style={{ padding: '0 16px' }}>
+                <Graph
+                    title="POINTS GRAPH"
+                    datasets={graphPointsDatasets}
+                    xAxisKey="name"
+                    yAxisFormatter={(tick) => `${tick} M`}
+                    yAxisDomain={[0, 20]}
+                    yAxisTicks={[0, 5, 10, 15, 20]}
+                />
+            </div>
+        },
+    ];
 
     return (
-        <div style={{padding:'0 32px'}}>
-   
-          <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            data={{title: selectedRestaurant?.['RESTAURANT NAME'], 
-                status: selectedRestaurant?.['STATUS'], 
-                tabs}}
-          />
+        <div style={{ padding: '0 32px' }}>
+
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                data={{
+                    title: selectedRestaurant?.['RESTAURANT NAME'],
+                    status: selectedRestaurant?.['STATUS'],
+                    tabs
+                }}
+            />
+           
             <Table
                 title="ALL RESTAURANTS"
                 analytics={analytics}
@@ -195,6 +260,7 @@ const Restaurants = () => {
                 activeAnalyticsKey={activeAnalyticsKey}
                 onAnalyticsItemClick={setActiveAnalyticsKey}
                 pagination={{
+                    small: false,
                     currentPage,
                     totalPages: Math.ceil(allTableData.length / resultsPerPage),
                     totalResults: allTableData.length,
@@ -202,7 +268,7 @@ const Restaurants = () => {
                     onPageChange: setCurrentPage,
                 }}
             />
-     
+
         </div>
     );
 };

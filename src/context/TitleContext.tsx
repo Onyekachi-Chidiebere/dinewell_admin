@@ -7,8 +7,8 @@ interface TitleContextType {
   setTitle: (title: string) => void;
   actionText: string;
   setActionText: (text: string) => void;
-  action: (e: React.MouseEvent) => void;
-  setAction: (action: (e: React.MouseEvent) => void) => void;
+  action?: (e: React.MouseEvent) => void;
+  setAction: (action?: (e: React.MouseEvent) => void) => void;
 }
 
 // Create the context
@@ -18,7 +18,7 @@ const TitleContext = createContext<TitleContextType | undefined>(undefined);
 export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [title, setTitle] = useState('Dashboard');
   const [actionText, setActionText] = useState('');
-  const [action, setAction] = useState<(e: React.MouseEvent) => void>(() => () => {});
+  const [action, setAction] = useState<(e: React.MouseEvent) => void>();
 
   const value = {
     title,
@@ -27,7 +27,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
     setActionText,
     action,
     // It's important to wrap the setAction call in a function to avoid issues with React's state updates.
-    setAction: (newAction: (e: React.MouseEvent) => void) => setAction(() => newAction),
+    setAction
   };
 
   return (

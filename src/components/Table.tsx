@@ -11,6 +11,7 @@ interface AnalyticsItem {
 }
 
 interface PaginationProps {
+  small?: boolean;
   currentPage: number;
   totalPages: number;
   totalResults: number;
@@ -39,6 +40,7 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
             totalResults={pagination.totalResults}
             resultsPerPage={pagination.resultsPerPage}
             onPageChange={pagination.onPageChange}
+            small={pagination.small}
           />
         )}
     <div style={{ display: 'flex', gap: '16px', fontFamily: 'var(--font-mulish)',}}>
