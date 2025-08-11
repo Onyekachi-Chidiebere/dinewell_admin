@@ -3,11 +3,12 @@ import { Badge, Box, Group, Text } from '@mantine/core';
 
 interface DetailRowProps {
   label: string;
-  value: string;
+  value?: string;
+  children?: React.ReactNode;
 }
 
-export const DetailRow: React.FC<DetailRowProps> = ({ label, value }) => (
-  <Group justify="space-between" my={4}>
+export const DetailRow: React.FC<DetailRowProps> = ({ label, value, children }) => (
+  <Group justify="space-between" my={4} align="center">
     <Badge
       variant="light"
       styles={{
@@ -23,7 +24,7 @@ export const DetailRow: React.FC<DetailRowProps> = ({ label, value }) => (
     >
       {label}
     </Badge>
-    <Text size="sm" fw={600}>{value}</Text>
+    {children || <Text size="sm" fw={600}>{value}</Text>}
   </Group>
 );
 

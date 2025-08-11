@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
 import Table from "@/components/Table";
+import { Avatar } from '@mantine/core';
 import Modal from '@/components/Modal';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 
@@ -136,7 +137,9 @@ const Restaurants = () => {
             <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
           </ModalCard>
           <ModalCard title="">
-            <DetailRow label="RESTAURANT PHOTO" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
+            <DetailRow label="RESTAURANT PHOTO">
+              <Avatar src={selectedRestaurant?.logo} size={80} radius="sm" />
+            </DetailRow>
           </ModalCard>
           <ModalCard title="RESTAURANT DETAILS">
             <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
