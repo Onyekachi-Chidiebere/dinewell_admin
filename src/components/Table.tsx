@@ -19,13 +19,13 @@ interface PaginationProps {
 }
 
 interface TableProps {
-  title: string;
-  analytics: AnalyticsItem[];
+  title?: string;
+  analytics?: AnalyticsItem[];
   headers: string[];
   data: Record<string, any>[];
   renderCell: (header: string, value: any, row: Record<string, any>) => React.ReactNode;
-  activeAnalyticsKey: string;
-  onAnalyticsItemClick: (key: string) => void;
+  activeAnalyticsKey?: string;
+  onAnalyticsItemClick?: (key: string) => void;
   pagination?: PaginationProps;
 }
 
@@ -41,15 +41,15 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
             onPageChange={pagination.onPageChange}
           />
         )}
-    <div style={{ display: 'flex', gap: '16px', fontFamily: 'var(--font-mulish)', padding: '16px 32px' }}>
+    <div style={{ display: 'flex', gap: '16px', fontFamily: 'var(--font-mulish)',}}>
       {/* Analytics Sidebar */}
-      <aside style={{ width: '280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      {analytics&&<aside style={{ width: '280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {analytics.map((item) => {
           const isActive = item.key === activeAnalyticsKey;
           return (
             <div
               key={item.key}
-              onClick={() => onAnalyticsItemClick(item.key)}
+              onClick={() => onAnalyticsItemClick?onAnalyticsItemClick(item.key):null}
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -62,6 +62,7 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
                 fontFamily: 'var(--font-red-hat-display)',
                 fontWeight: 600,
                 cursor: 'pointer',
+              
               }}
             >
               <span>{item.label}</span>
@@ -71,12 +72,12 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
             </div>
           );
         })} 
-      </aside>
+      </aside>}
 
       {/* Main Table Content */}
       <main style={{ flex: 1, background: '#FFFFFF', borderRadius: '12px' }}>
         {/* Table Header */}
-        <div style={{ background: '#F8FAFC', padding: '10px', borderRadius: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #E2E8F0' }}>
+        {title&&<div style={{ background: '#F8FAFC', padding: '10px', borderRadius: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #E2E8F0' }}>
           <h2 style={{ fontFamily: 'var(--font-maven-pro)', fontWeight: 700, fontSize: '16px', padding: '0 10px', color: '#828DA9', margin: 0, textTransform: 'uppercase' }}>
             {title}
           </h2>
@@ -84,10 +85,10 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
             <button style={{ background: '#fff', border: '1px solid #D2D3F3', borderRadius: '24px', padding: '8px 16px', color: '#828DA9', fontSize: '12px', cursor: 'pointer' }}>Refresh Table</button>
             <button style={{ background: '#fff', border: '1px solid #D2D3F3', borderRadius: '24px', padding: '8px 16px', color: '#828DA9', fontSize: '12px', cursor: 'pointer' }}>All Status</button>
           </div>
-        </div>
+        </div>}
 
         {/* Table */}
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', }}>
           <thead>
             <tr style={{  borderBottom: '1px solid #E2E8F0' }}>
               {headers.map((header) => (
@@ -103,7 +104,17 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
             {data.map((row, rowIndex) => (
               <tr key={rowIndex} style={{ borderBottom: '1px solid #E2E8F0' }}>
                 {headers.map((header) => (
-                  <td key={header} style={{ padding: '12px 16px', fontSize: '14px', color: '#334155' }}>
+                  <td key={header} style={{
+                    padding: '12px 16px',
+                    fontSize: '14px',
+                    color: '#334155',
+                    ...(header === 'USERS NAME' && {
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '150px' // Adjust width as needed
+                    })
+                  }}>
                     {renderCell(header, row[header], row)}
                   </td>
                 ))}

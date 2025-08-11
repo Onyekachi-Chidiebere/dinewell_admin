@@ -5,6 +5,7 @@ import Table from "@/components/Table";
 import { Avatar } from '@mantine/core';
 import Modal from '@/components/Modal';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
+import UsersTab from '@/components/UsersTab';
 
 
 const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> = ({ status }) => {
@@ -128,7 +129,22 @@ const Restaurants = () => {
         return value;
     };
 
-    const tabs = [
+    const mockUsers = [
+    { id: '1', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPER ADMIN', activeStatus: '12/05/2025 12:02PM' },
+    { id: '2', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'ADMIN', activeStatus: '12/05/2025 12:02PM' },
+    { id: '3', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'SUPPORT', activeStatus: '12/05/2025 12:02PM' },
+    { id: '4', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'MANAGER', activeStatus: '12/05/2025 12:02PM' },
+    { id: '5', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    { id: '6', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    { id: '7', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
+    { id: '8', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    { id: '9', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'INTERN', activeStatus: '12/05/2025 12:02PM' },
+    { id: '10', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    { id: '11', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+    { id: '12', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
+  ];
+
+  const tabs = [
     {
       name: 'Details',
       content: (
@@ -154,14 +170,14 @@ const Restaurants = () => {
         </div>
       ),
     },
-    { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
-    { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
-    { name: 'Users', content: <p style={{padding: '16px'}}>Users</p> },
+    // { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
+    // { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
+    { name: 'Users', content: <UsersTab users={mockUsers} /> },
     { name: 'Analytics', content: <p style={{padding: '16px'}}>Analytics</p> },
   ];
 
     return (
-        <div>
+        <div style={{padding:'0 32px'}}>
    
           <Modal
             isOpen={isModalOpen}

@@ -81,6 +81,7 @@ const Pagination: React.FC<PaginationProps> = ({
         borderBottom: '1px solid #EBEEFF',
         fontFamily: 'var(--font-mulish)',
         fontSize: '14px',
+        marginBottom:'32px'
       }}
     >
       <span style={{ color: '#828DA9' }}>
