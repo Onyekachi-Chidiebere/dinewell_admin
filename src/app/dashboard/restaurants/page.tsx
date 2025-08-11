@@ -6,9 +6,11 @@ import { useTitle } from "@/context/TitleContext";
 import Table from "@/components/Table";
 import { Avatar } from '@mantine/core';
 import Modal from '@/components/Modal';
+import ModalBreadCrumb from '@/components/ModalBreadCrumb';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 import UsersTab from '@/components/UsersTab';
 import Graph from "@/components/Graph";
+import fileIcon from '@/assets/svg/file.svg';
 
 interface User {
     id: string;
@@ -226,6 +228,11 @@ const Restaurants = () => {
         { name: 'Users', content: <div style={{ padding: '0 16px' }}><UsersTab users={mockUsers} /> </div> },
         {
             name: 'Analytics', content: <div style={{ padding: '0 16px' }}>
+                <div>
+                    <ModalBreadCrumb title="Total visiting" subtitle="CUSTOMERS" icon={fileIcon} count="12" /> 
+                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={fileIcon} count="102" /> 
+                    {/* <ModalBreadCrumb title="Analytics" subtitle="Analytics" icon="/icons/restaurant.svg" count="12" />  */}
+                </div>
                 <Graph
                     title="POINTS GRAPH"
                     datasets={graphPointsDatasets}
