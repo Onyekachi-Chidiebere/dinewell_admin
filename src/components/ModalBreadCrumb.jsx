@@ -3,11 +3,11 @@ import Image from "next/image";
 const ModalBreadCrumb = ({ title, subtitle, icon, count }) => {
     const containerStyle = {
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: icon ? 'column' : 'row',
         justifyContent: 'space-between',
-        padding: '16px',
-        width: '316px',
-        height: '100px',
+        alignItems: icon ? 'flex-start' : 'center',
+        padding: icon ? '10px' : '16px',
+        width: '48%',
         border: '1px solid #D2D3F3',
         borderTop: '5px solid #D2D3F3',
         borderRadius: '12px',
@@ -59,7 +59,7 @@ const ModalBreadCrumb = ({ title, subtitle, icon, count }) => {
     return (
         <div style={containerStyle}>
             <div style={topSectionStyle}>
-                <Image src={icon} alt={title || 'icon'} width={24} height={24} />
+                {icon && <Image src={icon} alt={title || 'icon'} width={24} height={24} />}
                 <div style={textContainerStyle}>
                     <p style={titleStyle}>{title}</p>
                     <p style={subtitleStyle}>{subtitle}</p>

@@ -108,7 +108,7 @@ const Table: React.FC<TableProps> = ({ title, analytics, headers, data, renderCe
                 {headers.map((header) => (
                   <td key={header} style={{
                     padding: '12px 16px',
-                    fontSize: '14px',
+                    fontSize: pagination?.small?'12px':'14px',
                     color: '#334155',
                     ...(header === 'USERS NAME' && {
                       whiteSpace: 'nowrap',
