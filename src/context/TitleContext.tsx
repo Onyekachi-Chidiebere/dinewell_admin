@@ -26,7 +26,6 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
     actionText,
     setActionText,
     action,
-    // It's important to wrap the setAction call in a function to avoid issues with React's state updates.
     setAction
   };
 

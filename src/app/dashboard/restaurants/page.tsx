@@ -78,7 +78,7 @@ const Restaurants = () => {
     useEffect(() => {
         setTitle("Restaurants");
         setActionText("New Restaurant");
-        setAction(() => console.log("New Restaurant clicked!"));
+        setAction(() => ()=> console.log("New Restaurant clicked!"));
     }, [setTitle, setAction, setActionText]);
 
     const analytics = [
@@ -228,10 +228,9 @@ const Restaurants = () => {
         { name: 'Users', content: <div style={{ padding: '0 16px' }}><UsersTab users={mockUsers} /> </div> },
         {
             name: 'Analytics', content: <div style={{ padding: '0 16px' }}>
-                <div>
-                    <ModalBreadCrumb title="Total visiting" subtitle="CUSTOMERS" icon={fileIcon} count="12" /> 
-                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={fileIcon} count="102" /> 
-                    {/* <ModalBreadCrumb title="Analytics" subtitle="Analytics" icon="/icons/restaurant.svg" count="12" />  */}
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                    <ModalBreadCrumb title="Total visiting" subtitle="CUSTOMERS" icon={fileIcon} count="1210" /> 
+                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={fileIcon} count="10,120,000" /> 
                 </div>
                 <Graph
                     title="POINTS GRAPH"
