@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Red_Hat_Display, Maven_Pro, Mulish } from "next/font/google";
+import { Geist, Geist_Mono, Red_Hat_Display, Maven_Pro, Mulish,  } from "next/font/google";
 import "./globals.css";
 import { MantineProvider, ColorSchemeScript } from '@mantine/core';
 
@@ -19,7 +19,6 @@ const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
-
 const mavenPro = Maven_Pro({
   subsets: ["latin"],
   variable: "--font-maven-pro",

@@ -26,6 +26,7 @@ const Customers = () => {
 
     const headers = ['S/N', 'CUSTOMER NAME', 'EMAIL ADDRESS', 'PHONE NUMBER', 'DATE JOINED', 'POINTS EARNED', 'RESTAURANTS VISITED', 'ACTIONS'];
 
+    const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
     const allTableData = [
         { 'S/N': '01', 'CUSTOMER NAME': 'Adetunji Olaoluwa', 'EMAIL ADDRESS': 'adetunji@example.com', 'PHONE NUMBER': '+234 812 345 6789', 'DATE JOINED': '12/02/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
         { 'S/N': '02', 'CUSTOMER NAME': 'Adeleke Oluwaseun', 'EMAIL ADDRESS': 'adeleke@example.com', 'PHONE NUMBER': '+234 813 456 7890', 'DATE JOINED': '15/03/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
@@ -170,7 +171,7 @@ const Customers = () => {
                 }}
             />
             <Table
-                title="ALL CUSTOMERS"
+                title={tableTitle}
                 analytics={analytics}
                 headers={headers}
                 data={tableData}

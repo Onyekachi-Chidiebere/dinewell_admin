@@ -87,6 +87,7 @@ const Restaurants = () => {
         { key: 'blocked', label: 'Blocked Restaurants', count: 2 },
     ];
 
+    const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
     const headers = ['S/N', 'RESTAURANT NAME', 'RESTAURANT ID', 'LOCATION', 'TIER', 'STATUS', 'ACTIONS'];
 
     const allTableData = [
@@ -258,7 +259,7 @@ const Restaurants = () => {
             />
            
             <Table
-                title="ALL RESTAURANTS"
+                title={tableTitle}
                 analytics={analytics}
                 headers={headers}
                 data={tableData}

@@ -87,6 +87,7 @@ const PointRecords = () => {
         { key: 'transaction', label: 'Transactions', count: 12 },
     ];
 
+    const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
     const headers = ['S/N', 'RESTAURANT NAME', 'NUMBER OF DISHES', 'TOTAL POINTS EARNED', 'TOTAL POINTS REDEEMED', 'TOTAL CUSTOMER VISIT', 'RANK', 'ACTIONS'];
 
     const allTableData = [
@@ -332,7 +333,7 @@ const PointRecords = () => {
             />
 
             <Table
-                title="RESTAURANTS"
+                title={tableTitle}
                 analytics={analytics}
                 headers={headers}
                 data={tableData}
