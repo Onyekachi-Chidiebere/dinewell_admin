@@ -39,12 +39,12 @@ const RoleBadge: React.FC<{ role: User['role'] }> = ({ role }) => (
 
 
 const UsersTab: React.FC<UsersTabProps> = ({ users }) => {
-    const headers = ['S/N', 'USERS NAME', 'EMAIL', 'ROLE', 'ACTIVE STATUS'];
+    const headers = ['S/N', 'USERNAME', 'EMAIL', 'ROLE', 'ACTIVE STATUS'];
     const [currentPage, setCurrentPage] = useState(1);
     const resultsPerPage = 10;
     const tableData = users.map((user, index) => ({
         'S/N': index + 1,
-        'USERS NAME': user.name,
+        'USERNAME': user.name,
         'EMAIL': user.email,
         'ROLE': user.role,
         'ACTIVE STATUS': user.activeStatus,
@@ -94,8 +94,9 @@ const UsersTab: React.FC<UsersTabProps> = ({ users }) => {
                     totalResults: tableData.length,
                     resultsPerPage,
                     onPageChange: setCurrentPage,
+                    small: true
                 }}
-                title={''} />
+                />
         </div>
     );
 };
