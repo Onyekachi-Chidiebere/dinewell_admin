@@ -1,0 +1,24 @@
+
+.input {
+  width: 100%;
+  background-color: #FFFFFF;
+  border: 1px solid #D2D3F3;
+  border-radius: 25px;
+  padding: 15px 20px;
+  color: #000000;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #888;
+}
+
+.inputWithAsterisk {
+  padding-left: 30px;
+}
+.input:focus,
+.input:not(:placeholder-shown) {
+  border-color: #9B87F6;
+  outline: none;
+}
