@@ -6,9 +6,9 @@ import Modal from '@/components/Modal';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 import ModalBreadCrumb from "@/components/ModalBreadCrumb";
 import { Avatar } from "@mantine/core";
-import UsersTab from "@/components/UsersTab";
+
 const Customers = () => {
-    const { setTitle, setAction, setActionText } = useTitle();
+    const { setTitle } = useTitle();
     const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +26,7 @@ const Customers = () => {
 
     const headers = ['S/N', 'CUSTOMER NAME', 'EMAIL ADDRESS', 'PHONE NUMBER', 'DATE JOINED', 'POINTS EARNED', 'RESTAURANTS VISITED', 'ACTIONS'];
 
-    const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
+    const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label;
     const allTableData = [
         { 'S/N': '01', 'CUSTOMER NAME': 'Adetunji Olaoluwa', 'EMAIL ADDRESS': 'adetunji@example.com', 'PHONE NUMBER': '+234 812 345 6789', 'DATE JOINED': '12/02/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
         { 'S/N': '02', 'CUSTOMER NAME': 'Adeleke Oluwaseun', 'EMAIL ADDRESS': 'adeleke@example.com', 'PHONE NUMBER': '+234 813 456 7890', 'DATE JOINED': '15/03/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
@@ -139,8 +139,6 @@ const Customers = () => {
                     <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={''} count="10,120,000" />
                 </div>
                 <Table
-                    // title="ALL CUSTOMERS"
-                    // analytics={analytics}
                     headers={restaurantHeaders}
                     data={restaurantableData}
                     renderCell={renderCell}
