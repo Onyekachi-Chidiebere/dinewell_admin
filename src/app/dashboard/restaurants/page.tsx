@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
 import Table from "@/components/Table";

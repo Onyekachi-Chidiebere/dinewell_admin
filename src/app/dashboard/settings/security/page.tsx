@@ -1,17 +1,6 @@
 import styles from './page.module.css';
 
 const Security = () => {
-    const user = {
-        'USER ID': '121212121',
-        'USER NAME': 'John Doe',
-        'ADDRESS': '123 Main St, Toronto, Canada',
-        'LOCATION': 'Toronto, Canada',
-        'EMAIL': 'john.doe@example.com',
-        'PHONE NUMBER': '08012345678',
-        'DESIGNATION': 'Super Admin',
-        'STATUS': 'Active',
-        'logo': ''
-    };
     return <div>
         <div style={{ width: '70%', margin: 'auto', border: '1px solid #EAEEF2', borderRadius: '20px' }}>
             <div style={{ background: "url('/maze-bg.svg') no-repeat left 32px center", height: '100px' }} />
