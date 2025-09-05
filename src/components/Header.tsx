@@ -32,7 +32,7 @@ const Header = () => {
             leaveTo="opacity-0 translate-y-1"
           >
             <Popover.Panel className="absolute z-10 top-full mt-2">
-              <MenuPopup />
+              {({ close }) => <MenuPopup onItemClick={close} />}
             </Popover.Panel>
           </Transition>
         </Popover>

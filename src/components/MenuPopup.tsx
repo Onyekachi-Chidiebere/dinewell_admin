@@ -26,15 +26,19 @@ const menuItems = [
   { key: 'settings', name: 'Settings', icon: settingsIcon, count: null, activeIcon: settingsActiveIcon },
 ];
 
-const MenuPopup = () => {
+interface MenuPopupProps {
+  onItemClick?: () => void;
+}
+
+const MenuPopup: React.FC<MenuPopupProps> = ({ onItemClick }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState<string>('Dashboard');
-  
+
   // Update active item based on current route
   useEffect(() => {
     const currentRoute = pathname.split('/').pop() || 'dashboard';
-    const activeMenuItem = menuItems.find(item => 
+    const activeMenuItem = menuItems.find(item =>
       item.key.toLowerCase() === currentRoute.toLowerCase() ||
       (currentRoute === '' && item.key === 'dashboard')
     );
@@ -42,10 +46,14 @@ const MenuPopup = () => {
       setActiveItem(activeMenuItem.name);
     }
   }, [pathname]);
-  
+
   const handleItemClick = (itemName: string, itemKey: string) => {
     setActiveItem(itemName);
-    router.push(`/dashboard/${itemKey}`);
+    const route = itemKey === 'dashboard' ? '/dashboard' : `/dashboard/${itemKey}`;
+    router.push(route);
+    if (onItemClick) {
+      onItemClick();
+    }
   };
 
   return (
