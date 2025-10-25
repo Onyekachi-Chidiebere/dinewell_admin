@@ -1,6 +1,5 @@
 
 "use client";
-"use client";
 import React from "react";
 import { Popover, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
@@ -9,8 +8,16 @@ import searchIcon from "../assets/svg/searchicon.svg";
 import moreHorizontalIcon from "../assets/svg/morehorizontalicon.svg";
 import Image from "next/image";
 import MenuPopup from "./MenuPopup";
+import { useAuth } from '@/context/AuthContext';
+import { showSuccess } from '@/utils/toast';
 
 const Header = () => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    showSuccess('Logged out successfully');
+    logout();
+  };
   return (
     <header
       className="max-w-full px-[32px] bg-white flex items-center justify-between"
@@ -64,17 +71,23 @@ const Header = () => {
         </div>
         {/* Avatar and Badge integrated with logo */}
         <div className="flex items-center border-[0.2px] bg-[#EAEEF2] border-[#5D47C1] rounded-full" style={{ gap: 1, marginLeft: 4 }}>
-          <img
-            src="https://randomuser.me/api/portraits/men/32.jpg"
-            alt="Profile"
+          <div
             style={{
               width: 24,
               height: 24,
               borderRadius: '50%',
-              objectFit: 'cover',
-              margin   :'2px'
+              backgroundColor: '#5D47C1',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: 10,
+              fontWeight: 'bold',
+              margin: '2px'
             }}
-          />
+          >
+            {user?.name?.charAt(0)?.toUpperCase() || 'A'}
+          </div>
           <span
             style={{
               padding: '4px 8px',
@@ -88,7 +101,7 @@ const Header = () => {
               margin:'2px'
             }}
           >
-            Super Admin
+            {user?.name || 'Admin'}
           </span>
         </div>
       </div>
@@ -113,8 +126,14 @@ const Header = () => {
        <button className="flex items-center justify-center cursor-pointer w-[40px] h-[40px] border-[0.2px] bg-[#FAF9FF] border-[#EBEEFF] rounded-full"> 
          <Image src={searchIcon} alt="Search" width={20} height={20}/>
        </button>
-       <button className="flex items-center justify-center cursor-pointer w-[40px] h-[40px] border-[0.2px] bg-[#FAF9FF] border-[#EBEEFF] rounded-full"> 
-          <Image src={moreHorizontalIcon} alt="More" width={20} height={20}/>
+       <button 
+         onClick={handleLogout}
+         className="flex items-center justify-center cursor-pointer w-[40px] h-[40px] border-[0.2px] bg-[#FAF9FF] border-[#EBEEFF] rounded-full hover:bg-red-50 hover:border-red-200 transition-colors"
+         title="Logout"
+       > 
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9M16 17L21 12L16 7M21 12H9" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
        </button>
       </div>
     </header>

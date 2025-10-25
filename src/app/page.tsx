@@ -1,7 +1,17 @@
 "use client";
 import Image from "next/image";
 import styles from "./login.module.css";
+import { useLogin } from "@/customHooks/useLogin";
+
 export default function Login() {
+  const {
+    email,
+    password,
+    loading,
+    setEmail,
+    setPassword,
+    handleLogin,
+  } = useLogin();
   return (
     <div className={styles.loginContainer}>
       {/* Shadow */}
@@ -17,7 +27,7 @@ export default function Login() {
       <h2 className="text-[12px] leading-[10px] font-inter font-normal italic text-[#828DA9]">Sign In to Access your Workplace</h2>
      </div>
         {/* Form Fields */}
-        <form className="flex flex-col  w-[400px]">
+        <form className="flex flex-col  w-[400px]" onSubmit={handleLogin}>
         
           <div className="h-[20px] w-full"/>
           {/* Email Field */}
@@ -33,11 +43,14 @@ export default function Login() {
             }}
           >
             <input
-              type="Email"
+              type="email"
               placeholder="Email here"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="flex-1 bg-transparent outline-none font-mulish text-[12px] font-normal leading-[9.6px] tracking-[-0.4%] text-[#828DA9] placeholder-[#828DA9] h-full"
               style={{fontFamily: 'Mulish', fontWeight: 400, fontSize: 12, lineHeight: '0.8em', letterSpacing: '-0.4%', height: '100%', border: 'none', margin:16}}
               required
+              disabled={loading}
             />
          
           </div>
@@ -57,9 +70,12 @@ export default function Login() {
             <input
               type="password"
               placeholder="Password here"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="flex-1 bg-transparent outline-none font-mulish text-[12px] font-normal leading-[9.6px] tracking-[-0.4%] text-[#828DA9] placeholder-[#828DA9] h-full"
               style={{fontFamily: 'Mulish', fontWeight: 400, fontSize: 12, lineHeight: '0.8em', letterSpacing: '-0.4%', height: '100%', border: 'none', margin:16}}
               required
+              disabled={loading}
             />
          
           </div>
@@ -67,10 +83,11 @@ export default function Login() {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full font-maven font-bold text-[16px] leading-[12.8px] tracking-[-0.4%] text-center mt-4 cursor-pointer"
+            disabled={loading}
+            className="w-full font-maven font-bold text-[16px] leading-[12.8px] tracking-[-0.4%] text-center mt-4 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               height: 44,
-              background: '#D52B1E',
+              background: loading ? '#ccc' : '#D52B1E',
               border: '1px solid',
               borderImage: 'linear-gradient(90deg, #C4CBF2 0%, #DCC2FF 44%, #E1DAF4 71%, #D2D3F3 100%) 1',
               borderRadius: 999,
@@ -79,7 +96,7 @@ export default function Login() {
               padding: 10,
             }}
           >
-            Login
+            {loading ? 'Logging in...' : 'Login'}
           </button>
           <div className="h-[20px] w-full"/>
             {/* Forgot Password */}
