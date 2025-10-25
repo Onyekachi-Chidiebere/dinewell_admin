@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
+import { useRestaurants } from "@/customHooks/useRestaurants";
 import Table from "@/components/Table";
-import { Avatar } from '@mantine/core';
+import { Avatar, LoadingOverlay } from '@mantine/core';
 import Modal from '@/components/Modal';
 import ModalBreadCrumb from '@/components/ModalBreadCrumb';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
@@ -68,10 +69,11 @@ const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> 
 
 const Restaurants = () => {
     const { setTitle, setAction, setActionText } = useTitle();
+    const { data, loading, error, fetchRestaurants } = useRestaurants();
     const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRestaurant, setSelectedRestaurant] = useState<Record<string, any> | null>({ 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },);
+    const [selectedRestaurant, setSelectedRestaurant] = useState<Record<string, any> | null>(null);
     const resultsPerPage = 10;
 
     useEffect(() => {
@@ -80,37 +82,31 @@ const Restaurants = () => {
         setAction(() => ()=> console.log("New Restaurant clicked!"));
     }, [setTitle, setAction, setActionText]);
 
-    const analytics = [
-        { key: 'all', label: 'All Restaurants', count: 3100 },
-        { key: 'pending', label: 'Pending Restaurants', count: 12 },
-        { key: 'blocked', label: 'Blocked Restaurants', count: 2 },
+    const analytics = data ? [
+        { key: 'all', label: 'All Restaurants', count: data.statistics.all },
+        { key: 'pending', label: 'Pending Restaurants', count: data.statistics.pending },
+        { key: 'disabled', label: 'Disabled Restaurants', count: data.statistics.disabled },
+    ] : [
+        { key: 'all', label: 'All Restaurants', count: 0 },
+        { key: 'pending', label: 'Pending Restaurants', count: 0 },
+        { key: 'disabled', label: 'Disabled Restaurants', count: 0 },
     ];
 
     const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
     const headers = ['S/N', 'RESTAURANT NAME', 'RESTAURANT ID', 'LOCATION', 'TIER', 'STATUS', 'ACTIONS'];
 
-    const allTableData = [
-        { 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '02', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '03', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '04', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '05', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '06', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '07', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '08', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '09', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '10', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '11', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '12', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '13', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '14', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '15', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '16', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '17', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '18', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '19', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '20', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-    ];
+    // Transform API data to table format
+    const allTableData = data ? data.restaurants.map((restaurant, index) => ({
+        'S/N': String(index + 1).padStart(2, '0'),
+        'RESTAURANT NAME': restaurant.name,
+        'RESTAURANT ID': restaurant.id.toString(),
+        'LOCATION': restaurant.location,
+        'TIER': 'Basic', // Default tier since not provided by API
+        'STATUS': restaurant.status.toUpperCase(),
+        'EMAIL': restaurant.email,
+        'PHONE': restaurant.phone,
+        'DATE CREATED': new Date(restaurant.dateCreated).toLocaleDateString(),
+    })) : [];
 
     const tableData = allTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
 
@@ -244,9 +240,31 @@ const Restaurants = () => {
         },
     ];
 
+    if (loading && !data) {
+        return (
+            <div style={{ padding: '0 32px', position: 'relative', minHeight: '400px' }}>
+                <LoadingOverlay visible={true} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ padding: '0 32px' }}>
+                <div style={{ 
+                    textAlign: 'center', 
+                    padding: '40px', 
+                    color: '#EF4444',
+                    fontSize: '16px'
+                }}>
+                    Error: {error}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div style={{ padding: '0 32px' }}>
-
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
@@ -267,14 +285,16 @@ const Restaurants = () => {
                 onAnalyticsItemClick={setActiveAnalyticsKey}
                 pagination={{
                     small: false,
-                    currentPage,
-                    totalPages: Math.ceil(allTableData.length / resultsPerPage),
-                    totalResults: allTableData.length,
-                    resultsPerPage,
-                    onPageChange: setCurrentPage,
+                    currentPage: data?.pagination.currentPage || currentPage,
+                    totalPages: data?.pagination.totalPages || 1,
+                    totalResults: data?.pagination.totalItems || 0,
+                    resultsPerPage: data?.pagination.itemsPerPage || resultsPerPage,
+                    onPageChange: async (page: number) => {
+                        setCurrentPage(page);
+                        await fetchRestaurants(page, resultsPerPage);
+                    },
                 }}
             />
-
         </div>
     );
 };
