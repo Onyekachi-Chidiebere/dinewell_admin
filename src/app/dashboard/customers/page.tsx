@@ -10,16 +10,29 @@ import { Avatar, LoadingOverlay } from "@mantine/core";
 
 const Customers = () => {
     const { setTitle } = useTitle();
-    const { data, loading, error, fetchCustomers } = useCustomers();
+    const { data, loading, error, fetchCustomers, getCustomerDetails, detailsLoading, detailsError } = useCustomers();
     const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<Record<string, any> | null>(null);
+    const [selectedUserDetails, setSelectedUserDetails] = useState<any>(null);
     const resultsPerPage = 10;
 
     useEffect(() => {
         setTitle("Customers");
     }, [setTitle]);
+
+    const handleUserSelect = async (row: Record<string, any>) => {
+        setSelectedUser(row);
+        setIsModalOpen(true);
+        
+        // Fetch detailed customer information
+        const customerId = parseInt(row['CUSTOMER ID']);
+        if (customerId) {
+            const details = await getCustomerDetails(customerId);
+            setSelectedUserDetails(details);
+        }
+    };
 
     const analytics = data ? [
         { key: 'all', label: 'All Customers', count: data.statistics.total_customers },
@@ -47,42 +60,14 @@ const Customers = () => {
 
     const tableData = allTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
 
-    const restaurantHeaders = ['S/N', 'RESTAURANT NAME', 'POINTS', 'TYPE', 'DATE & TIME', 'ACTIONS'];
-
-    const restaurantTableData = [
-        { 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'POINTS': '1,250', 'TYPE': 'Earned', 'DATE & TIME': '12/02/2023 14:30' },
-        { 'S/N': '02', 'RESTAURANT NAME': 'KFC', 'POINTS': '850', 'TYPE': 'Redeemed', 'DATE & TIME': '15/03/2023 09:15' },
-        { 'S/N': '03', 'RESTAURANT NAME': 'Dominos Pizza', 'POINTS': '1,500', 'TYPE': 'Earned', 'DATE & TIME': '20/03/2023 18:45' },
-        { 'S/N': '04', 'RESTAURANT NAME': 'Burger King', 'POINTS': '2,000', 'TYPE': 'Earned', 'DATE & TIME': '25/03/2023 12:30' },
-        { 'S/N': '05', 'RESTAURANT NAME': 'Pizza Hut', 'POINTS': '750', 'TYPE': 'Redeemed', 'DATE & TIME': '01/04/2023 16:20' },
-        { 'S/N': '06', 'RESTAURANT NAME': 'Tasty Fried Chicken', 'POINTS': '1,800', 'TYPE': 'Earned', 'DATE & TIME': '05/04/2023 19:10' },
-        { 'S/N': '07', 'RESTAURANT NAME': 'Chicken Lovers', 'POINTS': '950', 'TYPE': 'Redeemed', 'DATE & TIME': '10/04/2023 11:40' },
-        { 'S/N': '08', 'RESTAURANT NAME': 'Pizza Palace', 'POINTS': '1,100', 'TYPE': 'Earned', 'DATE & TIME': '15/04/2023 13:25' },
-        { 'S/N': '09', 'RESTAURANT NAME': 'McDonalds', 'POINTS': '2,200', 'TYPE': 'Earned', 'DATE & TIME': '20/04/2023 17:50' },
-        { 'S/N': '10', 'RESTAURANT NAME': 'Krispy Krunchy', 'POINTS': '650', 'TYPE': 'Redeemed', 'DATE & TIME': '25/04/2023 10:15' },
-        { 'S/N': '11', 'RESTAURANT NAME': 'Chicken Republic', 'POINTS': '1,400', 'TYPE': 'Earned', 'DATE & TIME': '01/05/2023 14:20' },
-        { 'S/N': '12', 'RESTAURANT NAME': 'KFC', 'POINTS': '1,750', 'TYPE': 'Earned', 'DATE & TIME': '05/05/2023 16:45' },
-        { 'S/N': '13', 'RESTAURANT NAME': 'Dominos Pizza', 'POINTS': '900', 'TYPE': 'Redeemed', 'DATE & TIME': '10/05/2023 12:30' },
-        { 'S/N': '14', 'RESTAURANT NAME': 'Burger King', 'POINTS': '1,100', 'TYPE': 'Earned', 'DATE & TIME': '15/05/2023 18:15' },
-        { 'S/N': '15', 'RESTAURANT NAME': 'Pizza Hut', 'POINTS': '2,300', 'TYPE': 'Earned', 'DATE & TIME': '20/05/2023 19:30' },
-        { 'S/N': '16', 'RESTAURANT NAME': 'Tasty Fried Chicken', 'POINTS': '800', 'TYPE': 'Redeemed', 'DATE & TIME': '25/05/2023 11:20' },
-        { 'S/N': '17', 'RESTAURANT NAME': 'Chicken Lovers', 'POINTS': '1,600', 'TYPE': 'Earned', 'DATE & TIME': '01/06/2023 15:40' },
-        { 'S/N': '18', 'RESTAURANT NAME': 'Pizza Palace', 'POINTS': '1,900', 'TYPE': 'Earned', 'DATE & TIME': '05/06/2023 17:25' },
-        { 'S/N': '19', 'RESTAURANT NAME': 'McDonalds', 'POINTS': '1,100', 'TYPE': 'Redeemed', 'DATE & TIME': '10/06/2023 12:10' },
-        { 'S/N': '20', 'RESTAURANT NAME': 'Krispy Krunchy', 'POINTS': '2,400', 'TYPE': 'Earned', 'DATE & TIME': '15/06/2023 19:45' },
-    ];
-    const restaurantableData = restaurantTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
-
+    const restaurantHeaders = ['S/N', 'RESTAURANT', 'POINTS', 'TYPE', 'DATE & TIME', ];
 
     const renderCell = (header: string, value: any, row: Record<string, any>) => {
 
         if (header === 'ACTIONS') {
             return (
                 <span
-                    onClick={() => {
-                        setSelectedUser(row);
-                        setIsModalOpen(true);
-                    }}
+                    onClick={() => handleUserSelect(row)}
                     style={{ cursor: 'pointer', color: '#828DA9' }}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,51 +88,95 @@ const Customers = () => {
             name: 'Details',
             content: (
                 <div style={{ padding: '0 16px' }}>
-                    <ModalCard title="">
-                        <DetailRow label="CUSTOMER ID" value={selectedUser?.['CUSTOMER ID'] || 'N/A'} />
-                    </ModalCard>
-                    <ModalCard title="">
-                        <DetailRow label="CUSTOMER PHOTO">
-                            <Avatar src={selectedUser?.profile_image} size={80} radius="sm" />
-                        </DetailRow>
-                    </ModalCard>
-                    <ModalCard title="CUSTOMER DETAILS">
-                        <DetailRow label="CUSTOMER NAME" value={selectedUser?.['CUSTOMER NAME'] || 'N/A'} />
-                        <DetailRow label="POINTS EARNED" value={selectedUser?.['POINTS EARNED'] || '0'} />
-                        <DetailRow label="RESTAURANTS VISITED" value={selectedUser?.['RESTAURANTS VISITED'] || '0'} />
-                    </ModalCard>
-                    <ModalCard title="CONTACT DETAILS">
-                        <DetailRow label="EMAIL" value={selectedUser?.['EMAIL ADDRESS'] || 'N/A'} />
-                        <DetailRow label="PHONE NUMBER" value={selectedUser?.['PHONE NUMBER'] || 'N/A'} />
-                    </ModalCard>
+                    {detailsLoading ? (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>
+                            <LoadingOverlay visible={true} />
+                        </div>
+                    ) : detailsError ? (
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#EF4444' }}>
+                            Error: {detailsError}
+                        </div>
+                    ) : selectedUserDetails ? (
+                        <>
+                            <ModalCard title="">
+                                <DetailRow label="CUSTOMER ID" value={selectedUserDetails.customer.id.toString()} />
+                            </ModalCard>
+                            <ModalCard title="">
+                                <DetailRow label="CUSTOMER PHOTO">
+                                    <Avatar src={selectedUserDetails.customer.profile_image} size={80} radius="sm" />
+                                </DetailRow>
+                            </ModalCard>
+                            <ModalCard title="CUSTOMER DETAILS">
+                                <DetailRow label="CUSTOMER NAME" value={selectedUserDetails.customer.name} />
+                                <DetailRow label="POINTS EARNED" value={selectedUserDetails.statistics.points_earned.toLocaleString()} />
+                                <DetailRow label="RESTAURANTS VISITED" value={selectedUserDetails.statistics.total_restaurant_visits.toString()} />
+                            </ModalCard>
+                            <ModalCard title="CONTACT DETAILS">
+                                <DetailRow label="EMAIL" value={selectedUserDetails.customer.email} />
+                                <DetailRow label="PHONE NUMBER" value={selectedUserDetails.customer.phone} />
+                            </ModalCard>
+                        </>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>
+                            No customer details available
+                        </div>
+                    )}
                 </div>
             ),
         },
         {
             name: 'Point Transactions', content: <div style={{ padding: '0 16px' }}>
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                    <ModalBreadCrumb title="Total visits" subtitle="RESTAURANTS" icon={''} count="1210" />
-                    <ModalBreadCrumb title="Total points" subtitle="BALANCE" icon={''} count="10,120,000" />
-                </div>
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                    <ModalBreadCrumb title="Total points" subtitle="EARNED" icon={''} count="10,120,000" />
-                    <ModalBreadCrumb title="Total points" subtitle="REDEEMED" icon={''} count="10,120,000" />
-                </div>
-                <Table
-                    headers={restaurantHeaders}
-                    data={restaurantableData}
-                    renderCell={renderCell}
-                    activeAnalyticsKey={activeAnalyticsKey}
-                    onAnalyticsItemClick={setActiveAnalyticsKey}
-                    pagination={{
-                        small: true,
-                        currentPage,
-                        totalPages: Math.ceil(restaurantableData.length / resultsPerPage),
-                        totalResults: restaurantableData.length,
-                        resultsPerPage,
-                        onPageChange: setCurrentPage,
-                    }}
-                />
+                {detailsLoading ? (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                        <LoadingOverlay visible={true} />
+                    </div>
+                ) : detailsError ? (
+                    <div style={{ textAlign: 'center', padding: '40px', color: '#EF4444' }}>
+                        Error: {detailsError}
+                    </div>
+                ) : selectedUserDetails ? (
+                    <>
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                            <ModalBreadCrumb title="Total visits" subtitle="RESTAURANTS" icon={''} count={selectedUserDetails.statistics.total_restaurant_visits.toString()} />
+                            <ModalBreadCrumb title="Total points" subtitle="BALANCE" icon={''} count={(selectedUserDetails.statistics.points_earned - selectedUserDetails.statistics.points_redeemed).toLocaleString()} />
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                            <ModalBreadCrumb title="Total points" subtitle="EARNED" icon={''} count={selectedUserDetails.statistics.points_earned.toLocaleString()} />
+                            <ModalBreadCrumb title="Total points" subtitle="REDEEMED" icon={''} count={selectedUserDetails.statistics.points_redeemed.toLocaleString()} />
+                        </div>
+                        <Table
+                            headers={restaurantHeaders}
+                            data={selectedUserDetails.point_transactions.map((transaction: any, index: number) => ({
+                                'S/N': String(index + 1).padStart(2, '0'),
+                                'RESTAURANT': transaction.restaurant_name,
+                                'POINTS': transaction.points.toLocaleString(),
+                                'TYPE': transaction.point_type,
+                                'DATE & TIME': new Date(transaction.date_used).toLocaleString(),
+                            }))}
+                            renderCell={renderCell}
+                            activeAnalyticsKey={activeAnalyticsKey}
+                            onAnalyticsItemClick={setActiveAnalyticsKey}
+                            pagination={{
+                                small: true,
+                                currentPage: selectedUserDetails.pagination.currentPage,
+                                totalPages: selectedUserDetails.pagination.totalPages,
+                                totalResults: selectedUserDetails.pagination.totalItems,
+                                resultsPerPage: selectedUserDetails.pagination.itemsPerPage,
+                                onPageChange: async (page: number) => {
+                                    const customerId = parseInt(selectedUser?.['CUSTOMER ID'] || '0');
+                                    if (customerId) {
+                                        const details = await getCustomerDetails(customerId, page, resultsPerPage);
+                                        setSelectedUserDetails(details);
+                                    }
+                                },
+                            }}
+                        />
+                    </>
+                ) : (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                        No transaction data available
+                    </div>
+                )}
             </div>
         },
     ];
