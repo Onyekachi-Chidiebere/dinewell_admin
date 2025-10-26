@@ -3,14 +3,12 @@
 
 import { useEffect, useState } from "react";
 import { useTitle } from "@/context/TitleContext";
+import { usePoints } from "@/customHooks/usePoints";
 import Table from "@/components/Table";
-import { Avatar } from '@mantine/core';
+import { Avatar, LoadingOverlay } from '@mantine/core';
 import Modal from '@/components/Modal';
-import ModalBreadCrumb from '@/components/ModalBreadCrumb';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 import UsersTab from '@/components/UsersTab';
-import Graph from "@/components/Graph";
-import fileIcon from '@/assets/svg/file.svg';
 
 interface User {
     id: string;
@@ -71,47 +69,42 @@ const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> 
 
 const PointRecords = () => {
     const { setTitle } = useTitle();
-    const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('restaurant');
+    const { data, loading, error, fetchPoints } = usePoints();
+    const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRestaurant, setSelectedRestaurant] = useState<Record<string, any> | null>({ 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },);
+    const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
     const resultsPerPage = 10;
 
     useEffect(() => {
         setTitle("Point Records");
     }, [setTitle]);
 
-    const analytics = [
-        { key: 'settlement', label: 'Settlement', count: 300 },
-        { key: 'restaurant', label: 'Restaurants', count: 3100 },
-        { key: 'transaction', label: 'Transactions', count: 12 },
+    const analytics = data ? [
+        { key: 'all', label: 'All Points', count: data.statistics.total_points },
+        { key: 'issued', label: 'Points Issued', count: data.statistics.total_used },
+        { key: 'redeemed', label: 'Points Redeemed', count: data.statistics.total_redeemed },
+    ] : [
+        { key: 'all', label: 'All Points', count: 0 },
+        { key: 'issued', label: 'Points Issued', count: 0 },
+        { key: 'redeemed', label: 'Points Redeemed', count: 0 },
     ];
 
     const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
-    const headers = ['S/N', 'RESTAURANT NAME', 'NUMBER OF DISHES', 'TOTAL POINTS EARNED', 'TOTAL POINTS REDEEMED', 'TOTAL CUSTOMER VISIT', 'RANK', 'ACTIONS'];
+    const headers = ['S/N', 'RESTAURANT NAME', 'CUSTOMER NAME', 'NO. OF POINTS', 'TYPE', 'DATE CREATED', 'ACTIONS'];
 
-    const allTableData = [
-        { 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '02', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '03', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '04', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '05', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '06', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '07', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '08', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '09', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '10', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '11', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '12', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '13', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '14', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '15', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '16', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '17', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-        { 'S/N': '18', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'PENDING' },
-        { 'S/N': '19', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'SUSPENDED' },
-        { 'S/N': '20', 'RESTAURANT NAME': 'Chicken Republic', 'NUMBER OF DISHES': 120, 'TOTAL POINTS EARNED': 1200, 'TOTAL POINTS REDEEMED': 120, 'TOTAL CUSTOMER VISIT': 120, 'RANK': '1', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', 'STATUS': 'ACTIVE' },
-    ];
+    // Transform API data to table format
+    const allTableData = data ? data.points.map((point, index) => ({
+        'S/N': String(index + 1).padStart(2, '0'),
+        'RESTAURANT NAME': point.restaurant_name,
+        'CUSTOMER NAME': point.customer_name,
+        'NO. OF POINTS': point.points.toString(),
+        'TYPE': point.type === 'issue' ? 'Issued' : 'Redeemed',
+        'DATE CREATED': new Date(point.date_used).toLocaleDateString(),
+        'POINT ID': point.id.toString(),
+    })) : [];
+
+    const tableData = allTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
 
     const StatsRow = ({ label, value }: { label: string; value: string }) =>{
         return (
@@ -197,7 +190,6 @@ const PointRecords = () => {
           
         );
     }
-    const tableData = allTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
 
     const renderCell = (header: string, value: any, row: Record<string, any>) => {
         if (header === 'STATUS') {
@@ -207,7 +199,7 @@ const PointRecords = () => {
             return (
                 <span
                     onClick={() => {
-                        setSelectedRestaurant(row);
+                        setSelectedRecord(row);
                         setIsModalOpen(true);
                     }}
                     style={{ cursor: 'pointer', color: '#828DA9' }}
@@ -241,69 +233,24 @@ const PointRecords = () => {
         { id: '12', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
     ];
 
-    const graphPointsDatasets = [
-        {
-            name: 'Points Redeemed ',
-            color: '#5D47C1',
-            data: [
-                { name: 'Sun 5th', value: 10.5 },
-                { name: 'Mon 6th', value: 10.5 },
-                { name: 'Tue 7th', value: 9 },
-                { name: 'Wed 8th', value: 5 },
-                { name: 'Thur 9th', value: 11.8 },
-                { name: 'Fri 10th', value: 9.8 },
-                { name: 'Sat 11th', value: 9.8 },
-                { name: 'Sun 12th', value: 12.2 },
-                { name: 'Mon 13th', value: 13 },
-                { name: 'Tue 14th', value: 8.5 },
-                { name: 'Wed 15th', value: 11 },
-                { name: 'Thur 16th', value: 7.2 },
-                { name: 'Fri 17th', value: 8 },
-            ]
-        },
-        {
-            name: 'Points Earned',
-            color: '#EF7013',
-            data: [
-                { name: 'Sun 5th', value: 8.2 },
-                { name: 'Mon 6th', value: 8.5 },
-                { name: 'Tue 7th', value: 7.8 },
-                { name: 'Wed 8th', value: 4.5 },
-                { name: 'Thur 9th', value: 10.2 },
-                { name: 'Fri 10th', value: 8.9 },
-                { name: 'Sat 11th', value: 9.1 },
-                { name: 'Sun 12th', value: 11.5 },
-                { name: 'Mon 13th', value: 12.1 },
-                { name: 'Tue 14th', value: 7.9 },
-                { name: 'Wed 15th', value: 10.0 },
-                { name: 'Thur 16th', value: 6.5 },
-                { name: 'Fri 17th', value: 7.2 },
-            ]
-        }
-    ];
-
     const tabs = [
         {
             name: 'Details',
             content: (
                 <div style={{ padding: '0 16px' }}>
                     <ModalCard title="">
-                        <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
+                        <DetailRow label="POINT ID" value={selectedRecord?.['POINT ID'] || 'N/A'} />
                     </ModalCard>
                     <ModalCard title="">
-                        <DetailRow label="RESTAURANT PHOTO">
-                            <Avatar src={selectedRestaurant?.logo} size={80} radius="sm" />
-                        </DetailRow>
+                        <DetailRow label="RESTAURANT" value={selectedRecord?.['RESTAURANT NAME'] || 'N/A'} />
                     </ModalCard>
-                    <ModalCard title="RESTAURANT DETAILS">
-                        <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
-                        <DetailRow label="ADDRESS" value={selectedRestaurant?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
-                        <DetailRow label="LOCATION" value={selectedRestaurant?.['LOCATION'] || 'Toronto, Canada'} />
+                    <ModalCard title="POINT DETAILS">
+                        <DetailRow label="CUSTOMER NAME" value={selectedRecord?.['CUSTOMER NAME'] || 'N/A'} />
+                        <DetailRow label="NO. OF POINTS" value={selectedRecord?.['NO. OF POINTS'] || '0'} />
+                        <DetailRow label="TYPE" value={selectedRecord?.['TYPE'] || 'N/A'} />
                     </ModalCard>
-                    <ModalCard title="CONTACT DETAILS">
-                        <DetailRow label="EMAIL" value={selectedRestaurant?.['EMAIL'] || 'sam@gmail.com'} />
-                        <DetailRow label="PHONE NUMBER" value={selectedRestaurant?.['PHONE NUMBER'] || '08012345678'} />
-                        <DetailRow label="WEBSITE" value={selectedRestaurant?.['WEBSITE'] || 'www.chickenrepublic.com'} />
+                    <ModalCard title="DATE INFO">
+                        <DetailRow label="DATE CREATED" value={selectedRecord?.['DATE CREATED'] || 'N/A'} />
                     </ModalCard>
                 </div>
             ),
@@ -319,6 +266,29 @@ const PointRecords = () => {
         },
     ];
 
+    if (loading && !data) {
+        return (
+            <div style={{ padding: '0 32px', position: 'relative', minHeight: '400px' }}>
+                <LoadingOverlay visible={true} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ padding: '0 32px' }}>
+                <div style={{ 
+                    textAlign: 'center', 
+                    padding: '40px', 
+                    color: '#EF4444',
+                    fontSize: '16px'
+                }}>
+                    Error: {error}
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div style={{ padding: '0 32px' }}>
 
@@ -326,8 +296,8 @@ const PointRecords = () => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 data={{
-                    title: selectedRestaurant?.['RESTAURANT NAME'],
-                    status: selectedRestaurant?.['STATUS'],
+                    title: selectedRecord?.['RESTAURANT NAME'] || 'Point Record',
+                    status: selectedRecord?.['TYPE'] || 'ACTIVE',
                     tabs
                 }}
             />
@@ -342,11 +312,14 @@ const PointRecords = () => {
                 onAnalyticsItemClick={setActiveAnalyticsKey}
                 pagination={{
                     small: false,
-                    currentPage,
-                    totalPages: Math.ceil(allTableData.length / resultsPerPage),
-                    totalResults: allTableData.length,
-                    resultsPerPage,
-                    onPageChange: setCurrentPage,
+                    currentPage: data?.pagination.currentPage || currentPage,
+                    totalPages: data?.pagination.totalPages || 1,
+                    totalResults: data?.pagination.totalItems || 0,
+                    resultsPerPage: data?.pagination.itemsPerPage || resultsPerPage,
+                    onPageChange: async (page: number) => {
+                        setCurrentPage(page);
+                        await fetchPoints(page, resultsPerPage);
+                    },
                 }}
             />
 
