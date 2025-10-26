@@ -1,54 +1,49 @@
 "use client";
 import Table from "@/components/Table";
 import { useTitle } from "@/context/TitleContext";
+import { useCustomers } from "@/customHooks/useCustomers";
 import { useEffect, useState } from "react";
 import Modal from '@/components/Modal';
 import ModalCard, { DetailRow } from '@/components/ModalCard';
 import ModalBreadCrumb from "@/components/ModalBreadCrumb";
-import { Avatar } from "@mantine/core";
+import { Avatar, LoadingOverlay } from "@mantine/core";
 
 const Customers = () => {
     const { setTitle } = useTitle();
+    const { data, loading, error, fetchCustomers } = useCustomers();
     const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<Record<string, any> | null>({ 'S/N': '01', 'RESTAURANT NAME': 'Chicken Republic', 'RESTAURANT ID': '1122334455', 'LOCATION': 'Toronto, Canada', 'TIER': 'Basic', },);
+    const [selectedUser, setSelectedUser] = useState<Record<string, any> | null>(null);
     const resultsPerPage = 10;
 
     useEffect(() => {
         setTitle("Customers");
     }, [setTitle]);
 
-    const analytics = [
-        { key: 'all', label: 'All Customers', count: 2100 },
-        { key: 'top', label: 'Top 100 Customers ', count: 100 },
+    const analytics = data ? [
+        { key: 'all', label: 'All Customers', count: data.statistics.total_customers },
+        { key: 'top', label: 'Top 100 Customers', count: Math.min(100, data.statistics.total_customers) },
+    ] : [
+        { key: 'all', label: 'All Customers', count: 0 },
+        { key: 'top', label: 'Top 100 Customers', count: 0 },
     ];
 
     const headers = ['S/N', 'CUSTOMER NAME', 'EMAIL ADDRESS', 'PHONE NUMBER', 'DATE JOINED', 'POINTS EARNED', 'RESTAURANTS VISITED', 'ACTIONS'];
 
     const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label;
-    const allTableData = [
-        { 'S/N': '01', 'CUSTOMER NAME': 'Adetunji Olaoluwa', 'EMAIL ADDRESS': 'adetunji@example.com', 'PHONE NUMBER': '+234 812 345 6789', 'DATE JOINED': '12/02/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '02', 'CUSTOMER NAME': 'Adeleke Oluwaseun', 'EMAIL ADDRESS': 'adeleke@example.com', 'PHONE NUMBER': '+234 813 456 7890', 'DATE JOINED': '15/03/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '03', 'CUSTOMER NAME': 'Olumide Johnson', 'EMAIL ADDRESS': 'olumide@example.com', 'PHONE NUMBER': '+234 814 567 8901', 'DATE JOINED': '20/03/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '04', 'CUSTOMER NAME': 'Chidinma Eze', 'EMAIL ADDRESS': 'chidinma@example.com', 'PHONE NUMBER': '+234 815 678 9012', 'DATE JOINED': '25/03/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '05', 'CUSTOMER NAME': 'Emeka Okonkwo', 'EMAIL ADDRESS': 'emeka@example.com', 'PHONE NUMBER': '+234 816 789 0123', 'DATE JOINED': '01/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '06', 'CUSTOMER NAME': 'Amina Mohammed', 'EMAIL ADDRESS': 'amina@example.com', 'PHONE NUMBER': '+234 817 890 1234', 'DATE JOINED': '05/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '07', 'CUSTOMER NAME': 'Oluwaseyi Adebayo', 'EMAIL ADDRESS': 'oluwaseyi@example.com', 'PHONE NUMBER': '+234 818 901 2345', 'DATE JOINED': '10/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '08', 'CUSTOMER NAME': 'Ngozi Eze', 'EMAIL ADDRESS': 'ngozi@example.com', 'PHONE NUMBER': '+234 819 012 3456', 'DATE JOINED': '15/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '09', 'CUSTOMER NAME': 'Ibrahim Musa', 'EMAIL ADDRESS': 'ibrahim@example.com', 'PHONE NUMBER': '+234 810 123 4567', 'DATE JOINED': '20/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '10', 'CUSTOMER NAME': 'Aisha Bello', 'EMAIL ADDRESS': 'aisha@example.com', 'PHONE NUMBER': '+234 811 234 5678', 'DATE JOINED': '25/04/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '11', 'CUSTOMER NAME': 'Yusuf Ahmed', 'EMAIL ADDRESS': 'yusuf@example.com', 'PHONE NUMBER': '+234 812 345 6789', 'DATE JOINED': '01/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '12', 'CUSTOMER NAME': 'Chioma Okafor', 'EMAIL ADDRESS': 'chioma@example.com', 'PHONE NUMBER': '+234 813 456 7890', 'DATE JOINED': '05/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '13', 'CUSTOMER NAME': 'Obinna Nwosu', 'EMAIL ADDRESS': 'obinna@example.com', 'PHONE NUMBER': '+234 814 567 8901', 'DATE JOINED': '10/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '14', 'CUSTOMER NAME': 'Amina Yusuf', 'EMAIL ADDRESS': 'aminay@example.com', 'PHONE NUMBER': '+234 815 678 9012', 'DATE JOINED': '15/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '15', 'CUSTOMER NAME': 'Chukwudi Okoro', 'EMAIL ADDRESS': 'chukwudi@example.com', 'PHONE NUMBER': '+234 816 789 0123', 'DATE JOINED': '20/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '16', 'CUSTOMER NAME': 'Folake Adeleke', 'EMAIL ADDRESS': 'folake@example.com', 'PHONE NUMBER': '+234 817 890 1234', 'DATE JOINED': '25/05/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '17', 'CUSTOMER NAME': 'Mohammed Sani', 'EMAIL ADDRESS': 'mohammed@example.com', 'PHONE NUMBER': '+234 818 901 2345', 'DATE JOINED': '01/06/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '18', 'CUSTOMER NAME': 'Grace Okafor', 'EMAIL ADDRESS': 'grace@example.com', 'PHONE NUMBER': '+234 819 012 3456', 'DATE JOINED': '05/06/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'ACTIVE' },
-        { 'S/N': '19', 'CUSTOMER NAME': 'Tunde Ojo', 'EMAIL ADDRESS': 'tunde@example.com', 'PHONE NUMBER': '+234 810 123 4567', 'DATE JOINED': '10/06/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-        { 'S/N': '20', 'CUSTOMER NAME': 'Blessing Okonkwo', 'EMAIL ADDRESS': 'blessing@example.com', 'PHONE NUMBER': '+234 811 234 5678', 'DATE JOINED': '15/06/2023', 'POINTS EARNED': '1000', 'RESTAURANTS VISITED': '10', 'STATUS': 'INACTIVE' },
-    ];
+    
+    // Transform API data to table format
+    const allTableData = data ? data.customers.map((customer, index) => ({
+        'S/N': String(index + 1).padStart(2, '0'),
+        'CUSTOMER NAME': customer.name,
+        'EMAIL ADDRESS': customer.email,
+        'PHONE NUMBER': customer.phone,
+        'DATE JOINED': new Date(customer.date_created).toLocaleDateString(),
+        'POINTS EARNED': customer.total_points_earned.toLocaleString(),
+        'RESTAURANTS VISITED': customer.total_restaurants_visited.toString(),
+        'CUSTOMER ID': customer.id.toString(),
+    })) : [];
 
     const tableData = allTableData.slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage);
 
@@ -109,21 +104,21 @@ const Customers = () => {
             content: (
                 <div style={{ padding: '0 16px' }}>
                     <ModalCard title="">
-                        <DetailRow label="CUSTOMER ID" value={selectedUser?.['CUSTOMER ID'] || '121212121'} />
+                        <DetailRow label="CUSTOMER ID" value={selectedUser?.['CUSTOMER ID'] || 'N/A'} />
                     </ModalCard>
                     <ModalCard title="">
-                        <DetailRow label="CUSTOMER  PHOTO">
-                            <Avatar src={selectedUser?.logo} size={80} radius="sm" />
+                        <DetailRow label="CUSTOMER PHOTO">
+                            <Avatar src={selectedUser?.profile_image} size={80} radius="sm" />
                         </DetailRow>
                     </ModalCard>
                     <ModalCard title="CUSTOMER DETAILS">
-                        <DetailRow label="CUSTOMER NAME" value={selectedUser?.['CUSTOMER NAME'] || ''} />
-                        <DetailRow label="ADDRESS" value={selectedUser?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
-                        <DetailRow label="LOCATION" value={selectedUser?.['LOCATION'] || 'Toronto, Canada'} />
+                        <DetailRow label="CUSTOMER NAME" value={selectedUser?.['CUSTOMER NAME'] || 'N/A'} />
+                        <DetailRow label="POINTS EARNED" value={selectedUser?.['POINTS EARNED'] || '0'} />
+                        <DetailRow label="RESTAURANTS VISITED" value={selectedUser?.['RESTAURANTS VISITED'] || '0'} />
                     </ModalCard>
                     <ModalCard title="CONTACT DETAILS">
-                        <DetailRow label="EMAIL" value={selectedUser?.['EMAIL'] || 'sam@gmail.com'} />
-                        <DetailRow label="PHONE NUMBER" value={selectedUser?.['PHONE NUMBER'] || '08012345678'} />
+                        <DetailRow label="EMAIL" value={selectedUser?.['EMAIL ADDRESS'] || 'N/A'} />
+                        <DetailRow label="PHONE NUMBER" value={selectedUser?.['PHONE NUMBER'] || 'N/A'} />
                     </ModalCard>
                 </div>
             ),
@@ -131,12 +126,12 @@ const Customers = () => {
         {
             name: 'Point Transactions', content: <div style={{ padding: '0 16px' }}>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                    <ModalBreadCrumb title="Total visiting" subtitle="CUSTOMERS" icon={''} count="1210" />
-                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={''} count="10,120,000" />
+                    <ModalBreadCrumb title="Total visits" subtitle="RESTAURANTS" icon={''} count="1210" />
+                    <ModalBreadCrumb title="Total points" subtitle="BALANCE" icon={''} count="10,120,000" />
                 </div>
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={''} count="10,120,000" />
-                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={''} count="10,120,000" />
+                    <ModalBreadCrumb title="Total points" subtitle="EARNED" icon={''} count="10,120,000" />
+                    <ModalBreadCrumb title="Total points" subtitle="REDEEMED" icon={''} count="10,120,000" />
                 </div>
                 <Table
                     headers={restaurantHeaders}
@@ -156,6 +151,29 @@ const Customers = () => {
             </div>
         },
     ];
+
+    if (loading && !data) {
+        return (
+            <div style={{ padding: '0 32px', position: 'relative', minHeight: '400px' }}>
+                <LoadingOverlay visible={true} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ padding: '0 32px' }}>
+                <div style={{ 
+                    textAlign: 'center', 
+                    padding: '40px', 
+                    color: '#EF4444',
+                    fontSize: '16px'
+                }}>
+                    Error: {error}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: '0 32px' }}>
@@ -178,11 +196,14 @@ const Customers = () => {
                 onAnalyticsItemClick={setActiveAnalyticsKey}
                 pagination={{
                     small: false,
-                    currentPage,
-                    totalPages: Math.ceil(allTableData.length / resultsPerPage),
-                    totalResults: allTableData.length,
-                    resultsPerPage,
-                    onPageChange: setCurrentPage,
+                    currentPage: data?.pagination.currentPage || currentPage,
+                    totalPages: data?.pagination.totalPages || 1,
+                    totalResults: data?.pagination.totalItems || 0,
+                    resultsPerPage: data?.pagination.itemsPerPage || resultsPerPage,
+                    onPageChange: async (page: number) => {
+                        setCurrentPage(page);
+                        await fetchCustomers(page, resultsPerPage);
+                    },
                 }}
             />
         </div>
