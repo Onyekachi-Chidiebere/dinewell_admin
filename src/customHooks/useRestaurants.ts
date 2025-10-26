@@ -35,19 +35,47 @@ export interface RestaurantResponse {
   pagination: RestaurantPagination;
 }
 
+export interface RestaurantDetails {
+  id: number;
+  restaurant_name: string;
+  email: string;
+  phone: string;
+  website: string;
+  address: string;
+}
+
+export interface RestaurantAnalytics {
+  total_visits: number;
+  total_points: number;
+  points_graph: Array<{
+    date: string;
+    no_of_points_issued: number;
+    no_of_points_redeemed: number;
+  }>;
+}
+
+export interface RestaurantDetailsResponse {
+  details: RestaurantDetails;
+  analytics: RestaurantAnalytics;
+}
+
 interface UseRestaurantsReturn {
   data: RestaurantResponse | null;
   loading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
   fetchRestaurants: (page?: number, limit?: number) => Promise<void>;
+  getRestaurantDetails: (restaurantId: number) => Promise<RestaurantDetailsResponse | null>;
+  detailsLoading: boolean;
+  detailsError: string | null;
 }
 
 export const useRestaurants = (): UseRestaurantsReturn => {
   const [data, setData] = useState<RestaurantResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { accessToken } = useAuth();
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [detailsError, setDetailsError] = useState<string | null>(null);
 
   const fetchRestaurants = async (page: number = 1, limit: number = 10): Promise<void> => {
     if (!API_BASE_URL) {
@@ -76,6 +104,33 @@ export const useRestaurants = (): UseRestaurantsReturn => {
     }
   };
 
+  const getRestaurantDetails = async (restaurantId: number): Promise<RestaurantDetailsResponse | null> => {
+    if (!API_BASE_URL) {
+      setDetailsError('API URL not configured');
+      return null;
+    }
+
+    setDetailsLoading(true);
+    setDetailsError(null);
+
+    try {
+      const response = await axios.get(`${API_BASE_URL}/merchant/restaurants/${restaurantId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data;
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to fetch restaurant details';
+      setDetailsError(errorMessage);
+      showError(errorMessage);
+      return null;
+    } finally {
+      setDetailsLoading(false);
+    }
+  };
+
   const refreshData = async (): Promise<void> => {
     if (data) {
       await fetchRestaurants(data.pagination.currentPage, data.pagination.itemsPerPage);
@@ -94,5 +149,8 @@ export const useRestaurants = (): UseRestaurantsReturn => {
     error,
     refreshData,
     fetchRestaurants,
+    getRestaurantDetails,
+    detailsLoading,
+    detailsError,
   };
 };

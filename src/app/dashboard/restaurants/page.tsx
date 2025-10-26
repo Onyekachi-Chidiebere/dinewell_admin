@@ -69,11 +69,12 @@ const StatusIndicator: React.FC<{ status: 'ACTIVE' | 'PENDING' | 'SUSPENDED' }> 
 
 const Restaurants = () => {
     const { setTitle, setAction, setActionText } = useTitle();
-    const { data, loading, error, fetchRestaurants } = useRestaurants();
+    const { data, loading, error, fetchRestaurants, getRestaurantDetails, detailsLoading, detailsError } = useRestaurants();
     const [activeAnalyticsKey, setActiveAnalyticsKey] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRestaurant, setSelectedRestaurant] = useState<Record<string, any> | null>(null);
+    const [selectedRestaurantDetails, setSelectedRestaurantDetails] = useState<any>(null);
     const resultsPerPage = 10;
 
     useEffect(() => {
@@ -81,6 +82,18 @@ const Restaurants = () => {
         setActionText("New Restaurant");
         setAction(() => ()=> console.log("New Restaurant clicked!"));
     }, [setTitle, setAction, setActionText]);
+
+    const handleRestaurantSelect = async (row: Record<string, any>) => {
+        setSelectedRestaurant(row);
+        setIsModalOpen(true);
+        
+        // Fetch detailed restaurant information
+        const restaurantId = parseInt(row['RESTAURANT ID']);
+        if (restaurantId) {
+            const details = await getRestaurantDetails(restaurantId);
+            setSelectedRestaurantDetails(details);
+        }
+    };
 
     const analytics = data ? [
         { key: 'all', label: 'All Restaurants', count: data.statistics.all },
@@ -117,10 +130,7 @@ const Restaurants = () => {
         if (header === 'ACTIONS') {
             return (
                 <span
-                    onClick={() => {
-                        setSelectedRestaurant(row);
-                        setIsModalOpen(true);
-                    }}
+                    onClick={() => handleRestaurantSelect(row)}
                     style={{ cursor: 'pointer', color: '#828DA9' }}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -152,90 +162,109 @@ const Restaurants = () => {
         { id: '12', name: 'Call me senSÉ', email: 'ideastoimpact.sense@g...', role: 'STAFF', activeStatus: '12/05/2025 12:02PM' },
     ];
 
-    const graphPointsDatasets = [
-        {
-            name: 'Points Redeemed ',
-            color: '#5D47C1',
-            data: [
-                { name: 'Sun 5th', value: 10.5 },
-                { name: 'Mon 6th', value: 10.5 },
-                { name: 'Tue 7th', value: 9 },
-                { name: 'Wed 8th', value: 5 },
-                { name: 'Thur 9th', value: 11.8 },
-                { name: 'Fri 10th', value: 9.8 },
-                { name: 'Sat 11th', value: 9.8 },
-                { name: 'Sun 12th', value: 12.2 },
-                { name: 'Mon 13th', value: 13 },
-                { name: 'Tue 14th', value: 8.5 },
-                { name: 'Wed 15th', value: 11 },
-                { name: 'Thur 16th', value: 7.2 },
-                { name: 'Fri 17th', value: 8 },
-            ]
-        },
-        {
-            name: 'Points Earned',
-            color: '#EF7013',
-            data: [
-                { name: 'Sun 5th', value: 8.2 },
-                { name: 'Mon 6th', value: 8.5 },
-                { name: 'Tue 7th', value: 7.8 },
-                { name: 'Wed 8th', value: 4.5 },
-                { name: 'Thur 9th', value: 10.2 },
-                { name: 'Fri 10th', value: 8.9 },
-                { name: 'Sat 11th', value: 9.1 },
-                { name: 'Sun 12th', value: 11.5 },
-                { name: 'Mon 13th', value: 12.1 },
-                { name: 'Tue 14th', value: 7.9 },
-                { name: 'Wed 15th', value: 10.0 },
-                { name: 'Thur 16th', value: 6.5 },
-                { name: 'Fri 17th', value: 7.2 },
-            ]
-        }
-    ];
-
+    
     const tabs = [
         {
             name: 'Details',
             content: (
                 <div style={{ padding: '0 16px' }}>
-                    <ModalCard title="">
-                        <DetailRow label="RESTAURANT ID" value={selectedRestaurant?.['RESTAURANT ID'] || '121212121'} />
-                    </ModalCard>
-                    <ModalCard title="">
-                        <DetailRow label="RESTAURANT PHOTO">
-                            <Avatar src={selectedRestaurant?.logo} size={80} radius="sm" />
-                        </DetailRow>
-                    </ModalCard>
-                    <ModalCard title="RESTAURANT DETAILS">
-                        <DetailRow label="RESTAURANT NAME" value={selectedRestaurant?.['RESTAURANT NAME'] || ''} />
-                        <DetailRow label="ADDRESS" value={selectedRestaurant?.['ADDRESS'] || '123 Main St, Toronto, Canada'} />
-                        <DetailRow label="LOCATION" value={selectedRestaurant?.['LOCATION'] || 'Toronto, Canada'} />
-                    </ModalCard>
-                    <ModalCard title="CONTACT DETAILS">
-                        <DetailRow label="EMAIL" value={selectedRestaurant?.['EMAIL'] || 'sam@gmail.com'} />
-                        <DetailRow label="PHONE NUMBER" value={selectedRestaurant?.['PHONE NUMBER'] || '08012345678'} />
-                        <DetailRow label="WEBSITE" value={selectedRestaurant?.['WEBSITE'] || 'www.chickenrepublic.com'} />
-                    </ModalCard>
+                    {detailsLoading ? (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>
+                            <LoadingOverlay visible={true} />
+                        </div>
+                    ) : detailsError ? (
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#EF4444' }}>
+                            Error: {detailsError}
+                        </div>
+                    ) : selectedRestaurantDetails ? (
+                        <>
+                            <ModalCard title="">
+                                <DetailRow label="RESTAURANT ID" value={selectedRestaurantDetails.details.id} />
+                            </ModalCard>
+                            <ModalCard title="">
+                                <DetailRow label="RESTAURANT PHOTO">
+                                    <Avatar src={selectedRestaurantDetails.details.logo} size={80} radius="sm" />
+                                </DetailRow>
+                            </ModalCard>
+                            <ModalCard title="RESTAURANT DETAILS">
+                                <DetailRow label="RESTAURANT NAME" value={selectedRestaurantDetails.details.restaurant_name} />
+                                <DetailRow label="ADDRESS" value={selectedRestaurantDetails.details.address} />
+                                <DetailRow label="LOCATION" value={selectedRestaurantDetails.details.address} />
+                            </ModalCard>
+                            <ModalCard title="CONTACT DETAILS">
+                                <DetailRow label="EMAIL" value={selectedRestaurantDetails.details.email} />
+                                <DetailRow label="PHONE NUMBER" value={selectedRestaurantDetails.details.phone} />
+                                <DetailRow label="WEBSITE" value={selectedRestaurantDetails.details.website} />
+                            </ModalCard>
+                        </>
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '40px' }}>
+                            No restaurant details available
+                        </div>
+                    )}
                 </div>
             ),
         },
         // { name: 'Loyalty Program', content: <p style={{padding: '16px'}}>Loyalty Program</p> },
         // { name: 'Points Transactions', content: <p style={{padding: '16px'}}>Points Transactions</p> },
-        { name: 'Users', content: <div style={{ padding: '0 16px' }}><UsersTab users={mockUsers} /> </div> },
+        // { name: 'Users', content: <div style={{ padding: '0 16px' }}><UsersTab users={mockUsers} /> </div> },
         {
             name: 'Analytics', content: <div style={{ padding: '0 16px' }}>
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                    <ModalBreadCrumb title="Total visiting" subtitle="CUSTOMERS" icon={fileIcon} count="1210" /> 
-                    <ModalBreadCrumb title="Total points" subtitle="GENERATED" icon={fileIcon} count="10,120,000" /> 
-                </div>
-                <Graph
-                    title="POINTS GRAPH"
-                    datasets={graphPointsDatasets}
-                    xAxisKey="name"
-                    yAxisFormatter={(tick) => `${tick} M`}
-                    yAxisDomain={[0, 20]}
-                    yAxisTicks={[0, 5, 10, 15, 20]}
-                />
+                {detailsLoading ? (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                        <LoadingOverlay visible={true} />
+                    </div>
+                ) : detailsError ? (
+                    <div style={{ textAlign: 'center', padding: '40px', color: '#EF4444' }}>
+                        Error: {detailsError}
+                    </div>
+                ) : selectedRestaurantDetails ? (
+                    <>
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                            <ModalBreadCrumb 
+                                title="Total visiting" 
+                                subtitle="CUSTOMERS" 
+                                icon={fileIcon} 
+                                count={selectedRestaurantDetails.analytics.total_visits.toString()} 
+                            /> 
+                            <ModalBreadCrumb 
+                                title="Total points" 
+                                subtitle="GENERATED" 
+                                icon={fileIcon} 
+                                count={selectedRestaurantDetails.analytics.total_points.toLocaleString()} 
+                            /> 
+                        </div>
+                        <Graph
+                            title="POINTS GRAPH"
+                            datasets={[
+                                {
+                                    name: 'Points Issued',
+                                    color: '#5D47C1',
+                                    data: selectedRestaurantDetails.analytics.points_graph.map((item: any) => ({
+                                        name: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                                        value: item.no_of_points_issued
+                                    }))
+                                },
+                                {
+                                    name: 'Points Redeemed',
+                                    color: '#EF7013',
+                                    data: selectedRestaurantDetails.analytics.points_graph.map((item: any) => ({
+                                        name: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                                        value: item.no_of_points_redeemed
+                                    }))
+                                }
+                            ]}
+                            xAxisKey="name"
+                            yAxisFormatter={(tick) => `${tick}`}
+                            yAxisDomain={[0, Math.max(...selectedRestaurantDetails.analytics.points_graph.map((item: any) => Math.max(item.no_of_points_issued, item.no_of_points_redeemed))) + 10]}
+                            yAxisTicks={[0, 10, 20, 30, 40, 50]}
+                        />
+                    </>
+                ) : (
+                    <div style={{ textAlign: 'center', padding: '40px' }}>
+                        No analytics data available
+                    </div>
+                )}
             </div>
         },
     ];
