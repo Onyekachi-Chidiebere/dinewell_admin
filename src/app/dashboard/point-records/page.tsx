@@ -76,6 +76,13 @@ const PointRecords = () => {
     const [selectedRecord, setSelectedRecord] = useState<Record<string, any> | null>(null);
     const resultsPerPage = 10;
 
+    // Handle analytics filter change
+    const handleAnalyticsChange = async (key: string) => {
+        setActiveAnalyticsKey(key);
+        setCurrentPage(1);
+        await fetchPoints(1, resultsPerPage, key);
+    };
+
     useEffect(() => {
         setTitle("Point Records");
     }, [setTitle]);
@@ -89,6 +96,11 @@ const PointRecords = () => {
         { key: 'issued', label: 'Points Issued', count: 0 },
         { key: 'redeemed', label: 'Points Redeemed', count: 0 },
     ];
+
+    useEffect(() => {
+        // Fetch data when activeAnalyticsKey changes
+        fetchPoints(1, resultsPerPage, activeAnalyticsKey);
+    }, [activeAnalyticsKey]);
 
     const tableTitle = analytics.find((item) => item.key === activeAnalyticsKey)?.label ;
     const headers = ['S/N', 'RESTAURANT NAME', 'CUSTOMER NAME', 'NO. OF POINTS', 'TYPE', 'DATE CREATED', 'ACTIONS'];
@@ -309,7 +321,7 @@ const PointRecords = () => {
                 data={tableData}
                 renderCell={renderCell}
                 activeAnalyticsKey={activeAnalyticsKey}
-                onAnalyticsItemClick={setActiveAnalyticsKey}
+                onAnalyticsItemClick={handleAnalyticsChange}
                 pagination={{
                     small: false,
                     currentPage: data?.pagination.currentPage || currentPage,
@@ -318,7 +330,7 @@ const PointRecords = () => {
                     resultsPerPage: data?.pagination.itemsPerPage || resultsPerPage,
                     onPageChange: async (page: number) => {
                         setCurrentPage(page);
-                        await fetchPoints(page, resultsPerPage);
+                        await fetchPoints(page, resultsPerPage, activeAnalyticsKey);
                     },
                 }}
             />

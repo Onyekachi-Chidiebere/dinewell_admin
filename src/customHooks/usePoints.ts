@@ -37,7 +37,7 @@ interface UsePointsReturn {
   loading: boolean;
   error: string | null;
   refreshData: () => Promise<void>;
-  fetchPoints: (page?: number, limit?: number) => Promise<void>;
+  fetchPoints: (page?: number, limit?: number, type?: string) => Promise<void>;
 }
 
 export const usePoints = (): UsePointsReturn => {
@@ -45,7 +45,7 @@ export const usePoints = (): UsePointsReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPoints = async (page: number = 1, limit: number = 10): Promise<void> => {
+  const fetchPoints = async (page: number = 1, limit: number = 10, type: string = 'all'): Promise<void> => {
     if (!API_BASE_URL) {
       setError('API URL not configured');
       return;
@@ -56,7 +56,7 @@ export const usePoints = (): UsePointsReturn => {
 
     try {
       const response = await axios.get(`${API_BASE_URL}/points/admin/list`, {
-        params: { page, limit },
+        params: { page, limit, type },
         headers: {
           'Content-Type': 'application/json',
         },
@@ -74,7 +74,7 @@ export const usePoints = (): UsePointsReturn => {
 
   const refreshData = async (): Promise<void> => {
     if (data) {
-      await fetchPoints(data.pagination.currentPage, data.pagination.itemsPerPage);
+      await fetchPoints(data.pagination.currentPage, data.pagination.itemsPerPage, 'all');
     } else {
       await fetchPoints();
     }

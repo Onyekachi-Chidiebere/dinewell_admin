@@ -12,7 +12,7 @@ export default function CreateAdminPage() {
   const handleSuccess = () => {
     showSuccess('Admin account created successfully!');
     setShowForm(false);
-    
+
     // Redirect to login page after a short delay
     setTimeout(() => {
       router.push('/');
