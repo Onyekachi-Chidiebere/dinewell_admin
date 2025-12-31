@@ -314,7 +314,7 @@ const PrivacyPolicyPage = () => {
                   marginBottom: '8px',
                 }}
               >
-                Email: privacy@dinewell.com
+                Email: dinwellapps@gmail.com
               </Text>
               <Text
                 size="sm"

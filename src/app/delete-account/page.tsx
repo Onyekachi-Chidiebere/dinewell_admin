@@ -66,7 +66,7 @@ const DeleteAccountPage = () => {
                   color: '#5D47C1',
                 }}
               >
-                support@dinewell.com
+                dinwellapps@gmail.com
               </Text>
             </div>
           </ModalCard>
@@ -185,7 +185,7 @@ const DeleteAccountPage = () => {
                   color: '#171717',
                 }}
               >
-                Email: support@dinewell.com
+                Email: dinwellapps@gmail.com
               </Text>
             </div>
           </ModalCard>
